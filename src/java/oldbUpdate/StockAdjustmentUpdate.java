@@ -36,6 +36,7 @@ public class StockAdjustmentUpdate {
         if (rsLocal.next()) {
             Date date = rsLocal.getDate("v_DATE");
             String inv_no = rsLocal.getString("inv_no");
+            String branch_cd = rsLocal.getString("branch_cd");
             Timestamp ts = rsLocal.getTimestamp("INIT_TIMESTAMP");
 
             sql = "select * from STKADJDT  where ref_no='" + refNo + "'";
@@ -44,7 +45,7 @@ public class StockAdjustmentUpdate {
 
             while (rsLocal.next()) {
                 String sqlUpdate = "insert into oldb0_2 (doc_ref_no,doc_date,doc_cd,SR_CD,ac_cd,"
-                        + "PCS,TRNS_ID,time_stamp,rate,tag_no,inv_no) values(?,?,?,?,?,?,?,?,?,?,?)";
+                        + "PCS,TRNS_ID,time_stamp,rate,tag_no,inv_no,BRANCH_CD) values(?,?,?,?,?,?,?,?,?,?,?,?)";
 
                 PreparedStatement pstUpdate = null;
                 pstUpdate = con.prepareStatement(sqlUpdate);
@@ -63,6 +64,7 @@ public class StockAdjustmentUpdate {
                 pstUpdate.setDouble(9, 0.00);
                 pstUpdate.setString(10, rsLocal.getString("tag_no"));
                 pstUpdate.setString(11, inv_no);
+                pstUpdate.setString(12, branch_cd);
                 i += pstUpdate.executeUpdate();
 
                 if (rsLocal.getInt("qty") > 0) {
