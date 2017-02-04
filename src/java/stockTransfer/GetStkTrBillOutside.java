@@ -51,7 +51,7 @@ public class GetStkTrBillOutside extends HttpServlet {
 
         if (dataConnection != null) {
             try {
-                String sql = "SELECT v.remark,v.REF_NO,v.from_loc,v.to_loc,v.V_DATE,t.TAG_NO,t.sr_cd,s.SR_NAME,t.IMEI_NO "
+                String sql = "SELECT v.remark,v.REF_NO,v.from_loc,v.to_loc,v.V_DATE,t.TAG_NO,t.sr_cd,s.SR_NAME,t.IMEI_NO,v.user_id,v.edit_no,v.time_stamp "
                         + ",t.SERAIL_NO,v1.PUR_TAG_NO,1 AS QTY FROM stktrfouthd v LEFT JOIN stktrfoutdt  v1 ON v.REF_NO = v1.REF_NO "
                         + " LEFT JOIN tag t ON v1.pur_tag_no=t.ref_no LEFT JOIN SERIESMST s ON s.SR_CD=t.SR_CD  where v.ref_no=?";
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
@@ -72,6 +72,9 @@ public class GetStkTrBillOutside extends HttpServlet {
                     object.addProperty("QTY", rsLocal.getString("QTY"));
                     object.addProperty("PUR_TAG_NO", rsLocal.getString("PUR_TAG_NO"));
                     object.addProperty("REMARK", rsLocal.getString("REMARK"));
+                    object.addProperty("USER_ID", lb.getUserName(rsLocal.getString("USER_ID")));
+                    object.addProperty("EDIT_NO", rsLocal.getString("EDIT_NO"));
+                    object.addProperty("TIME_STAMP", rsLocal.getString("TIME_STAMP"));
                     array.add(object);
                 }
 //                response.getWriter().print(array.toString());

@@ -58,6 +58,7 @@ public class SalesBillDetail {
     private String remark;
     private String SFID;
     private String pmt_days;
+    private String branch_cd;
 
     public String getPmt_days() {
         return pmt_days;
@@ -433,6 +434,14 @@ public class SalesBillDetail {
 
     public void setBAJAJ_AMT(double BAJAJ_AMT) {
         this.BAJAJ_AMT = BAJAJ_AMT;
+    }
+
+    public String getBranch_cd() {
+        return branch_cd;
+    }
+
+    public void setBranch_cd(String branch_cd) {
+        this.branch_cd = branch_cd;
     }
 
 }

@@ -62,11 +62,11 @@ public class AddUpdateStkAdjDetail extends HttpServlet {
                 dataConnection.setAutoCommit(false);
                 String sql = "";
                 if (ref_no.equalsIgnoreCase("")) {
-                    sql = "INSERT INTO STKADJHD  (INV_NO,V_DATE,USER_ID,REMARK,REF_NO) VALUES (?,?,?,?,?)";
+                    sql = "INSERT INTO STKADJHD  (INV_NO,V_DATE,USER_ID,REMARK,branch_cd,REF_NO) VALUES (?,?,?,?,?,?)";
                     detail.get(0).setRef_no(lb.generateKey(dataConnection, "STKADJHD", "REF_NO", "STK", 7));
                 } else {
                     new StockAdjustmentUpdate().deleteEntry(dataConnection, ref_no);
-                    sql = "UPDATE STKADJHD  set ref_no=?,V_DATE=?,USER_ID=?,REMARK=?,EDIT_NO=EDIT_NO+1,TIME_STAMP=CURRENT_TIMESTAMP where ref_no=?";
+                    sql = "UPDATE STKADJHD  set ref_no=?,V_DATE=?,USER_ID=?,REMARK=?,EDIT_NO=EDIT_NO+1,TIME_STAMP=CURRENT_TIMESTAMP,branch_cd=? where ref_no=?";
                 }
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
                 if (ref_no.equalsIgnoreCase("")) {
@@ -77,7 +77,8 @@ public class AddUpdateStkAdjDetail extends HttpServlet {
                 pstLocal.setString(2, detail.get(0).getV_date());
                 pstLocal.setString(3, detail.get(0).getUser_id());
                 pstLocal.setString(4, detail.get(0).getRemark());
-                pstLocal.setString(5, detail.get(0).getRef_no());
+                pstLocal.setString(5, detail.get(0).getBranch_cd());
+                pstLocal.setString(6, detail.get(0).getRef_no());
                 pstLocal.executeUpdate();
 
                 sql = "Update STKADJHD set INIT_TIMESTAMP = TIME_STAMP where ref_no='" + detail.get(0).getRef_no() + "'";

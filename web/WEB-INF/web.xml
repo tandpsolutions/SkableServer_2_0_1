@@ -792,6 +792,14 @@
         <servlet-name>GetCardDetail</servlet-name>
         <servlet-class>account.GetCardDetail</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetTIDMaster</servlet-name>
+        <servlet-class>tid.GetTIDMaster</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddUpdateTidMaster</servlet-name>
+        <servlet-class>tid.AddUpdateTidMaster</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ValidateLogin</servlet-name>
         <url-pattern>/ValidateLogin</url-pattern>
@@ -1579,6 +1587,14 @@
     <servlet-mapping>
         <servlet-name>GetCardDetail</servlet-name>
         <url-pattern>/GetCardDetail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetTIDMaster</servlet-name>
+        <url-pattern>/GetTIDMaster</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddUpdateTidMaster</servlet-name>
+        <url-pattern>/AddUpdateTidMaster</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

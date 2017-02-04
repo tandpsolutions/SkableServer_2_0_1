@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package stkAdjstMnt;
+package tid;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,12 +22,9 @@ import support.Library;
 
 /**
  *
- * @author bhaumik
+ * @author indianic
  */
-public class GetStkAdjBill extends HttpServlet {
-
-    DBHelper helper = DBHelper.GetDBHelper();
-    Library lb = Library.getInstance();
+public class GetTIDMaster extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,40 +37,24 @@ public class GetStkAdjBill extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Connection dataConnection = null;
-
+        
+        final DBHelper helper = DBHelper.GetDBHelper();
+        final Connection dataConnection = helper.getConnMpAdmin();
         final JsonObject jResultObj = new JsonObject();
-        final String ref_no = request.getParameter("ref_no");
-        if (dataConnection == null) {
-            dataConnection = helper.getConnMpAdmin();
-        }
-
+        Library lb = Library.getInstance();
         if (dataConnection != null) {
             try {
-                String sql = "select v.REF_NO,v.INV_NO,v.V_DATE,v1.TAG_NO,v1.sr_cd,s.SR_NAME,v1.IMEI_NO"
-                        + ",v1.SERAIL_NO,v1.PUR_TAG_NO,v1.QTY,v.remark,v.branch_cd from STKADJHD v left join STKADJDT  v1 on v.REF_NO = v1.REF_NO\n"
-                        + " left join SERIESMST s on s.SR_CD=v1.SR_CD where v.ref_no=?";
+                String sql = "select TID_CD,TID_NAME,USER_ID from TIDMST order by TID_NAME";
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
-                pstLocal.setString(1, ref_no);
                 ResultSet rsLocal = pstLocal.executeQuery();
                 JsonArray array = new JsonArray();
                 while (rsLocal.next()) {
                     JsonObject object = new JsonObject();
-                    object.addProperty("REF_NO", rsLocal.getString("REF_NO"));
-                    object.addProperty("INV_NO", rsLocal.getInt("INV_NO"));
-                    object.addProperty("V_DATE", rsLocal.getString("V_DATE"));
-                    object.addProperty("TAG_NO", rsLocal.getString("TAG_NO"));
-                    object.addProperty("SR_CD", rsLocal.getString("SR_CD"));
-                    object.addProperty("SR_NAME", rsLocal.getString("SR_NAME"));
-                    object.addProperty("IMEI_NO", rsLocal.getString("IMEI_NO"));
-                    object.addProperty("SERAIL_NO", rsLocal.getString("SERAIL_NO"));
-                    object.addProperty("QTY", rsLocal.getString("QTY"));
-                    object.addProperty("PUR_TAG_NO", rsLocal.getString("PUR_TAG_NO"));
-                    object.addProperty("REMARK", rsLocal.getString("REMARK"));
-                    object.addProperty("BRANCH_CD", rsLocal.getString("BRANCH_CD"));
+                    object.addProperty("TID_CD", rsLocal.getString("TID_CD"));
+                    object.addProperty("TID_NAME", rsLocal.getString("TID_NAME"));
+                    object.addProperty("USER_ID", rsLocal.getInt("USER_ID"));
                     array.add(object);
                 }
-//                response.getWriter().print(array.toString());
                 jResultObj.addProperty("result", 1);
                 jResultObj.addProperty("Cause", "success");
                 jResultObj.add("data", array);
@@ -84,9 +64,12 @@ public class GetStkAdjBill extends HttpServlet {
             } catch (SQLException ex) {
                 jResultObj.addProperty("result", -1);
                 jResultObj.addProperty("Cause", ex.getMessage());
+            } finally{
+                lb.closeConnection(dataConnection);
             }
         }
         response.getWriter().print(jResultObj);
+    
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

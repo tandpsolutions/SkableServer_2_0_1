@@ -1441,6 +1441,23 @@ public class Library {
         }
         return array;
     }
+    
+    public JsonArray getTidMaster(Connection dataConnection, String field, String value) throws SQLException {
+        String sql = "select TID_CD,TID_NAME from TIDMST WHERE " + field + " like '%" + value + "%'";
+        PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
+        ResultSet rsLocal = pstLocal.executeQuery();
+        JsonArray array = new JsonArray();
+        while (rsLocal.next()) {
+            JsonObject object = new JsonObject();
+            object.addProperty("TID_CD", rsLocal.getString("TID_CD"));
+            object.addProperty("TID_NAME", rsLocal.getString("TID_NAME"));
+            array.add(object);
+        }
+        return array;
+    }
+    
+    
+    
 
     public JsonArray getCashDetail(Connection dataConnection, String field, String value) throws SQLException {
         String sql = "SELECT c.REF_NO,VDATE,a.FNAME,c1.BAL,c1.REMARK,c.USER_ID,c.EDIT_NO,c.TIME_STAMP,a.AC_CD,o.DOC_REF_NO,o.INV_NO,o.DOC_CD FROM CPRHD "
