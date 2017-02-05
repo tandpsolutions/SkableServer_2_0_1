@@ -53,16 +53,16 @@ public class GetCashPaymentHeader extends HttpServlet {
 
         if (dataConnection != null) {
             try {
-                String sql = "select c.AC_CD,c.REF_NO,VDATE,a.FNAME,c1.BAL,c1.REMARK from CPRHD c left join CPRDT c1 on c.REF_NO=c1.REF_NO"
-                        + " left join ACNTMST a on c.AC_CD=a.AC_CD where VDATE>=? and VDATE<=? and CTYPE=? and branch_cd=? order by VDATE,ref_no";
-//                response.getWriter().print(from_date);
-//                response.getWriter().print(to_date);
-//                response.getWriter().print(sql);
+                String sql = "select c.AC_CD,c.REF_NO,VDATE,a.FNAME,c1.BAL,c1.REMARK,c.branch_cd from CPRHD c left join CPRDT c1 on c.REF_NO=c1.REF_NO"
+                        + " left join ACNTMST a on c.AC_CD=a.AC_CD where VDATE>=? and VDATE<=? and CTYPE=? ";
+                if (!branch_cd.equalsIgnoreCase("0")) {
+                    sql += " and branch_cd=" + branch_cd;
+                }
+                sql += " order by VDATE,ref_no";
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
                 pstLocal.setString(1, from_date);
                 pstLocal.setString(2, to_date);
                 pstLocal.setString(3, v_type);
-                pstLocal.setString(4, branch_cd);
                 ResultSet rsLocal = pstLocal.executeQuery();
                 JsonArray array = new JsonArray();
                 while (rsLocal.next()) {
@@ -73,6 +73,7 @@ public class GetCashPaymentHeader extends HttpServlet {
                     object.addProperty("BAL", rsLocal.getString("BAL"));
                     object.addProperty("REMARK", rsLocal.getString("REMARK"));
                     object.addProperty("AC_CD", rsLocal.getString("AC_CD"));
+                    object.addProperty("BRANCH_CD", rsLocal.getString("BRANCH_CD"));
                     array.add(object);
                 }
 //                response.getWriter().print(array.toString());

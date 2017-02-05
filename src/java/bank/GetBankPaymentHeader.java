@@ -53,13 +53,16 @@ public class GetBankPaymentHeader extends HttpServlet {
 
         if (dataConnection != null) {
             try {
-                String sql = "select c.AC_CD,c.cheque_no,c.REF_NO,VDATE,a.FNAME,c1.BAL,c1.REMARK,a1.fname as our_bank from bprhd c left join bprdt c1 on c.REF_NO=c1.REF_NO"
-                        + " left join ACNTMST a on c.AC_CD=a.AC_CD left join acntmst a1 on a1.ac_cd=c.bank_cd where VDATE>=? and VDATE<=? and CTYPE=? and branch_cd=? order by VDATE,ref_no";
+                String sql = "select c.AC_CD,c.cheque_no,c.REF_NO,VDATE,a.FNAME,c1.BAL,c1.REMARK,a1.fname as our_bank,c.branch_cd from bprhd c left join bprdt c1 on c.REF_NO=c1.REF_NO"
+                        + " left join ACNTMST a on c.AC_CD=a.AC_CD left join acntmst a1 on a1.ac_cd=c.bank_cd where VDATE>=? and VDATE<=? and CTYPE=? ";
+                if (!branch_cd.equalsIgnoreCase("0")) {
+                    sql += " and branch_cd=" + branch_cd;
+                }
+                sql += " order by VDATE,ref_no";
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
                 pstLocal.setString(1, from_date);
                 pstLocal.setString(2, to_date);
                 pstLocal.setString(3, v_type);
-                pstLocal.setString(4, branch_cd);
                 ResultSet rsLocal = pstLocal.executeQuery();
                 JsonArray array = new JsonArray();
                 while (rsLocal.next()) {
@@ -72,6 +75,7 @@ public class GetBankPaymentHeader extends HttpServlet {
                     object.addProperty("OUR_BANK", rsLocal.getString("OUR_BANK"));
                     object.addProperty("CHEQUE_NO", rsLocal.getString("CHEQUE_NO"));
                     object.addProperty("AC_CD", rsLocal.getString("AC_CD"));
+                    object.addProperty("BRANCH_CD", rsLocal.getString("BRANCH_CD"));
                     array.add(object);
                 }
                 jResultObj.addProperty("result", 1);
