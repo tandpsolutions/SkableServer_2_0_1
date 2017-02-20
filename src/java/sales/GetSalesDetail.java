@@ -56,7 +56,11 @@ public class GetSalesDetail extends HttpServlet {
                 String sql = "select l.ac_Cd,(p.card_chg+p.bajaj_chg) as BANK_CHARGES,l.REF_NO,l.INV_NO,l.V_TYPE,concat(a.FNAME,' ',a.MNAME,' ',a.LNAME) as ac_name,concat(ca.FNAME,' ',ca.MNAME,' ',ca.LNAME) as card_name,l.V_DATE,l.NET_AMT,"
                         + " CASH_AMT,BANK_AMT,CARD_AMT,BAJAJ_AMT,SFID,REMARK,l.INS_AMT,l.BUY_BACK_AMT,l.REMARK,l.PART_NO "
                         + " from VILSHD l left join ACNTMST a on l.AC_CD=a.AC_CD left join payment p on l.ref_no=p.ref_no left join acntmst ca on ca.ac_cd=p.CARD_NAME"
-                        + " where v_date>=? and v_date<=? and v_type=? and is_del=0 and l.branch_cd=" + branch_cd + " order by v_date,INV_NO";
+                        + " where v_date>=? and v_date<=? and v_type=? and is_del=0 ";
+                if (!branch_cd.equalsIgnoreCase("0")) {
+                    sql += " and branch_cd=" + branch_cd;
+                }
+                sql += " order by INV_NO,v_date";
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
                 pstLocal.setString(1, from_date);
                 pstLocal.setString(2, to_date);

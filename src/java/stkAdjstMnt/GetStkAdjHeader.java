@@ -52,8 +52,11 @@ public class GetStkAdjHeader extends HttpServlet {
         if (dataConnection != null) {
             try {
                 String sql = "select s.REF_NO,INV_NO,V_DATE,s2.SR_NAME,s1.QTY,s2.SR_ALIAS from STKADJHD s left join STKADJDT s1 on s.REF_NO=s1.REF_NO "
-                        + " left join SERIESMST s2 on s1.SR_CD=s2.SR_CD where v_date>=? and v_date<=? and is_del=0 and branch_cd="+branch_cd
-                        + " order by INV_NO,v_date";
+                        + " left join SERIESMST s2 on s1.SR_CD=s2.SR_CD where v_date>=? and v_date<=? and is_del=0 ";
+                if(!branch_cd.equalsIgnoreCase("0")){
+                    sql+=" and branch_cd="+branch_cd;
+                }
+                sql+=" order by INV_NO,v_date";
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
                 pstLocal.setString(1, from_date);
                 pstLocal.setString(2, to_date);
