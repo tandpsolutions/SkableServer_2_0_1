@@ -51,9 +51,16 @@ public class GetStockValueStatementDateWise extends HttpServlet {
         if (dataConnection != null) {
             try {
 
-                String sql = "select SR_ALIAS,SR_NAME,o.SR_CD,sum(case when TRNS_ID='I' then (PCS) else (0) end) as issue,"
-                        + "sum(case when TRNS_ID='R' then (PCS) else (0) end) as receipt from OLDB0_2 o "
-                        + " left join SERIESMST s on o.SR_CD=s.SR_CD left join MODELMST m on s.MODEL_CD=m.MODEL_CD"
+                String sql = "select type_name,SR_ALIAS,SR_NAME,o.SR_CD,sum(case when TRNS_ID='I' then (PCS) else (0) end) as issue,\n"
+                        + "sum(case when TRNS_ID='I' then (PCS*RATE) else (0) end) as issue_val,\n"
+                        + "sum(case when TRNS_ID='R' then (PCS) else (0) end) as receipt,\n"
+                        + "sum(case when TRNS_ID='R' then (PCS*RATE) else (0) end) as receipt_val,\n"
+                        + "(select sum(case when trns_id='R' then pcs when 'I' then pcs*-1 else pcs end) from oldb0_2 sub_o \n"
+                        + "where sub_o.SR_CD=o.sr_cd and sub_o.DOC_DATE<'" + from_date + "') as opb,\n"
+                        + "(select sum(case when trns_id='R' then pcs*rate when 'I' then pcs*rate*-1 else pcs*rate end)\n"
+                        + " from oldb0_2 sub_o where sub_o.SR_CD=o.sr_cd and sub_o.DOC_DATE<'" + from_date + "') as opb_val from OLDB0_2 o  \n"
+                        + "left join SERIESMST s on o.SR_CD=s.SR_CD left join MODELMST m on s.MODEL_CD=m.MODEL_CD"
+                        + " left join typemst t on m.type_cd=t.type_cd \n"
                         + " where o.DOC_DATE>='" + from_date + "' and o.DOC_DATE<='" + to_date + "'";
 
                 if (!type_cd.equalsIgnoreCase("")) {
@@ -70,28 +77,82 @@ public class GetStockValueStatementDateWise extends HttpServlet {
                     sql += " and s.model_cd='" + model_cd + "'";
                 }
                 sql += " group by SR_ALIAS,SR_NAME,o.SR_CD ";
-                sql += " order by s.sr_name";
+                sql += " order by s.sr_name,type_name";
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
                 ResultSet viewDataRs = pstLocal.executeQuery();
 
                 JsonArray array = new JsonArray();
                 while (viewDataRs.next()) {
                     JsonObject object = new JsonObject();
+                    object.addProperty("TYPE_NAME", viewDataRs.getString("TYPE_NAME"));
                     object.addProperty("SR_NAME", viewDataRs.getString("SR_NAME"));
                     object.addProperty("SR_ALIAS", viewDataRs.getString("SR_ALIAS"));
-                    object.addProperty("OPB", lb.getBalanceStockByDate(dataConnection, viewDataRs.getString("sr_cd"), from_date, 1));
-                    if (Double.isNaN(lb.getBalanceStockByDate(dataConnection, viewDataRs.getString("sr_cd"), from_date, 2))) {
+                    if (viewDataRs.getString("opb") == null) {
+                        object.addProperty("OPB", 0);
                         object.addProperty("OPB_VAL", 0.00);
                     } else {
-                        object.addProperty("OPB_VAL", lb.Convert2DecFmt(lb.getBalanceStockByDate(dataConnection, viewDataRs.getString("sr_cd"), from_date, 2)));
+                        object.addProperty("OPB", viewDataRs.getString("opb"));
+                        object.addProperty("OPB_VAL", viewDataRs.getString("opb_val"));
                     }
-                    object.addProperty("PURCHASE", lb.getPurchaseStockByDate(dataConnection, viewDataRs.getString("sr_cd"), from_date, to_date));
-                    object.addProperty("PURCHASE_VAL", lb.getPurchaseStockValByDate(dataConnection, viewDataRs.getString("sr_cd"), from_date, to_date));
-                    object.addProperty("SALES", lb.getSalesStockByDate(dataConnection, viewDataRs.getString("sr_cd"), from_date, to_date));
-                    object.addProperty("SALES_VAL", lb.getSalesStockValByDate(dataConnection, viewDataRs.getString("sr_cd"), from_date, to_date));
+                    object.addProperty("PURCHASE", viewDataRs.getString("receipt"));
+                    object.addProperty("PURCHASE_VAL", viewDataRs.getString("receipt_val"));
+                    object.addProperty("SALES", viewDataRs.getString("issue"));
+                    object.addProperty("SALES_VAL", viewDataRs.getString("issue_val"));
                     object.addProperty("SR_CD", viewDataRs.getString("SR_CD"));
                     array.add(object);
                 }
+
+                sql = "select type_name,SR_ALIAS,SR_NAME,o.SR_CD,sum(case when TRNS_ID='I' then (PCS) else (0) end) as issue,\n"
+                        + "sum(case when TRNS_ID='I' then (PCS*RATE) else (0) end) as issue_val,\n"
+                        + "sum(case when TRNS_ID='R' then (PCS) else (0) end) as receipt,\n"
+                        + "sum(case when TRNS_ID='R' then (PCS*RATE) else (0) end) as receipt_val,\n"
+                        + "(select sum(case when trns_id='R' then pcs when 'I' then pcs*-1 else pcs end) from oldb0_2 sub_o \n"
+                        + "where sub_o.SR_CD=o.sr_cd and sub_o.DOC_DATE<'" + from_date + "') as opb,\n"
+                        + "(select sum(case when trns_id='R' then pcs*rate when 'I' then pcs*rate*-1 else pcs*rate end)\n"
+                        + " from oldb0_2 sub_o where sub_o.SR_CD=o.sr_cd and sub_o.DOC_DATE<'" + from_date + "') as opb_val from OLDB0_2 o  \n"
+                        + "left join SERIESMST s on o.SR_CD=s.SR_CD left join MODELMST m on s.MODEL_CD=m.MODEL_CD"
+                        + " left join typemst t on m.type_cd=t.type_cd \n"
+                        + " where o.DOC_DATE<'" + from_date + "'"
+                        + " and s.sr_cd not in(select distinct(sr_cd) from oldb0_2 where doc_date >='" + from_date + "' "
+                        + " and doc_date<='" + to_date + "')";
+
+                if (!type_cd.equalsIgnoreCase("")) {
+                    sql += " and m.type_cd='" + type_cd + "' ";
+                }
+                if (!sub_type_cd.equalsIgnoreCase("")) {
+                    sql += " and m.sub_type_cd='" + sub_type_cd + "' ";
+                }
+                if (!sr_cd.equalsIgnoreCase("")) {
+                    sql += " and s.SR_CD='" + sr_cd + "'";
+                } else if (!brand_cd.equalsIgnoreCase("")) {
+                    sql += " and m.brand_cd = '" + brand_cd + "'";
+                } else if (!model_cd.equalsIgnoreCase("")) {
+                    sql += " and s.model_cd='" + model_cd + "'";
+                }
+                sql += " group by SR_ALIAS,SR_NAME,o.SR_CD ";
+                sql += " order by s.sr_name,type_name";
+                pstLocal = dataConnection.prepareStatement(sql);
+                viewDataRs = pstLocal.executeQuery();
+                while (viewDataRs.next()) {
+                    JsonObject object = new JsonObject();
+                    object.addProperty("TYPE_NAME", viewDataRs.getString("TYPE_NAME"));
+                    object.addProperty("SR_NAME", viewDataRs.getString("SR_NAME"));
+                    object.addProperty("SR_ALIAS", viewDataRs.getString("SR_ALIAS"));
+                    if (viewDataRs.getString("opb") == null) {
+                        object.addProperty("OPB", 0 + viewDataRs.getInt("receipt") - viewDataRs.getInt("issue"));
+                        object.addProperty("OPB_VAL", 0.00 + viewDataRs.getDouble("receipt_val") - viewDataRs.getDouble("issue_val"));
+                    } else {
+                        object.addProperty("OPB", viewDataRs.getInt("opb") + viewDataRs.getInt("receipt") - viewDataRs.getInt("issue"));
+                        object.addProperty("OPB_VAL", viewDataRs.getDouble("opb_val") + viewDataRs.getDouble("receipt_val") - viewDataRs.getDouble("issue_val"));
+                    }
+                    object.addProperty("PURCHASE", 0);
+                    object.addProperty("PURCHASE_VAL", 0.00);
+                    object.addProperty("SALES", 0);
+                    object.addProperty("SALES_VAL", 0.00);
+                    object.addProperty("SR_CD", viewDataRs.getString("SR_CD"));
+                    array.add(object);
+                }
+
                 lb.closeResultSet(viewDataRs);
                 lb.closeStatement(pstLocal);
                 jResultObj.addProperty("result", 1);
