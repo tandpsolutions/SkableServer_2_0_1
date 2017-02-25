@@ -52,16 +52,17 @@ public class GetStockValueStatementDateWise extends HttpServlet {
             try {
 
                 String sql = "select type_name,SR_ALIAS,SR_NAME,o.SR_CD,sum(case when TRNS_ID='I' then (PCS) else (0) end) as issue,\n"
-                        + "sum(case when TRNS_ID='I' then (PCS*RATE) else (0) end) as issue_val,\n"
-                        + "sum(case when TRNS_ID='R' then (PCS) else (0) end) as receipt,\n"
-                        + "sum(case when TRNS_ID='R' then (PCS*RATE) else (0) end) as receipt_val,\n"
-                        + "(select sum(case when trns_id='R' then pcs when 'I' then pcs*-1 else pcs end) from oldb0_2 sub_o \n"
-                        + "where sub_o.SR_CD=o.sr_cd and sub_o.DOC_DATE<'" + from_date + "') as opb,\n"
-                        + "(select sum(case when trns_id='R' then pcs*rate when 'I' then pcs*rate*-1 else pcs*rate end)\n"
-                        + " from oldb0_2 sub_o where sub_o.SR_CD=o.sr_cd and sub_o.DOC_DATE<'" + from_date + "') as opb_val from OLDB0_2 o  \n"
-                        + "left join SERIESMST s on o.SR_CD=s.SR_CD left join MODELMST m on s.MODEL_CD=m.MODEL_CD"
+                        + " sum(case when TRNS_ID='I' then (PCS*RATE) else (0) end) as issue_val,\n"
+                        + " sum(case when TRNS_ID='R' then (PCS) else (0) end) as receipt,\n"
+                        + " sum(case when TRNS_ID='R' then (PCS*RATE) else (0) end) as receipt_val,\n"
+                        + "(select sum(case when trns_id='R' then pcs when trns_id='I' then pcs*-1 else pcs end) from oldb0_2 sub_o \n"
+                        + " where sub_o.SR_CD=o.sr_cd and sub_o.DOC_DATE<'" + from_date + "' and DOC_CD <>'STK') as opb,\n"
+                        + " (select sum(case when trns_id='R' then pcs*rate when trns_id='I' then pcs*rate*-1 else pcs*rate end)\n"
+                        + " from oldb0_2 sub_o where sub_o.SR_CD=o.sr_cd and sub_o.DOC_DATE<'" + from_date + "' and DOC_CD <>'STK') as opb_val "
+                        + " from OLDB0_2 o  \n"
+                        + " left join SERIESMST s on o.SR_CD=s.SR_CD left join MODELMST m on s.MODEL_CD=m.MODEL_CD"
                         + " left join typemst t on m.type_cd=t.type_cd \n"
-                        + " where o.DOC_DATE>='" + from_date + "' and o.DOC_DATE<='" + to_date + "'";
+                        + " where o.DOC_DATE>='" + from_date + "' and o.DOC_DATE<='" + to_date + "' and DOC_CD <>'STK'";
 
                 if (!type_cd.equalsIgnoreCase("")) {
                     sql += " and m.type_cd='" + type_cd + "' ";
@@ -105,15 +106,13 @@ public class GetStockValueStatementDateWise extends HttpServlet {
                 sql = "select type_name,SR_ALIAS,SR_NAME,o.SR_CD,sum(case when TRNS_ID='I' then (PCS) else (0) end) as issue,\n"
                         + "sum(case when TRNS_ID='I' then (PCS*RATE) else (0) end) as issue_val,\n"
                         + "sum(case when TRNS_ID='R' then (PCS) else (0) end) as receipt,\n"
-                        + "sum(case when TRNS_ID='R' then (PCS*RATE) else (0) end) as receipt_val,\n"
-                        + "(select sum(case when trns_id='R' then pcs when 'I' then pcs*-1 else pcs end) from oldb0_2 sub_o \n"
-                        + "where sub_o.SR_CD=o.sr_cd and sub_o.DOC_DATE<'" + from_date + "') as opb,\n"
-                        + "(select sum(case when trns_id='R' then pcs*rate when 'I' then pcs*rate*-1 else pcs*rate end)\n"
-                        + " from oldb0_2 sub_o where sub_o.SR_CD=o.sr_cd and sub_o.DOC_DATE<'" + from_date + "') as opb_val from OLDB0_2 o  \n"
+                        + "sum(case when TRNS_ID='R' then (PCS*RATE) else (0) end) as receipt_val,"
+                        + "sum(case when TRNS_ID='O' then (PCS) else (0) end) as opb,\n"
+                        + "sum(case when TRNS_ID='O' then (PCS*RATE) else (0) end) as opb_val from OLDB0_2 o  \n"
                         + "left join SERIESMST s on o.SR_CD=s.SR_CD left join MODELMST m on s.MODEL_CD=m.MODEL_CD"
                         + " left join typemst t on m.type_cd=t.type_cd \n"
                         + " where o.DOC_DATE<'" + from_date + "'"
-                        + " and s.sr_cd not in(select distinct(sr_cd) from oldb0_2 where doc_date >='" + from_date + "' "
+                        + " and s.sr_cd not in(select distinct(sr_cd) from oldb0_2 where doc_date >='" + from_date + "' and DOC_CD <>'STK'"
                         + " and doc_date<='" + to_date + "')";
 
                 if (!type_cd.equalsIgnoreCase("")) {
