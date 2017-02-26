@@ -56,7 +56,7 @@ public class GetStockValueStatement extends HttpServlet {
         final Library lb = Library.getInstance();
         if (dataConnection != null) {
             try {
-                String sql = "select t.branch_cd,case when a.FNAME is not null then FNAME when t.AC_NAME is not null then t.ac_name else '' end as FNAME"
+                String sql = "select s.sr_alias,t.branch_cd,case when a.FNAME is not null then FNAME when t.AC_NAME is not null then t.ac_name else '' end as FNAME"
                         + ",SR_NAME,case when IMEI_NO='' then SERAIL_NO else IMEI_NO end as IMEI_NO,PUR_RATE,b.BRAND_NAME,m.model_name"
                         + ",case when l.v_date is not null then l.v_date when t.PUR_DATE is not null then t.PUR_DATE else '2016-04-01' end as v_date"
                         + ",DATEDIFF( CASE WHEN l.v_date IS NOT NULL THEN l.v_date WHEN t.PUR_DATE IS NOT NULL THEN t.PUR_DATE ELSE '2016-04-01' END ,CURRENT_DATE)*-1 as days"
@@ -121,6 +121,7 @@ public class GetStockValueStatement extends HttpServlet {
                 while (rsLocal.next()) {
                     JsonObject object = new JsonObject();
                     object.addProperty("SR_NAME", rsLocal.getString("SR_NAME"));
+                    object.addProperty("SR_ALIAS", rsLocal.getString("SR_ALIAS"));
                     object.addProperty("MODEL_NAME", rsLocal.getString("MODEL_NAME"));
                     object.addProperty("IMEI_NO", rsLocal.getString("IMEI_NO"));
                     object.addProperty("PUR_RATE", rsLocal.getDouble("PUR_RATE"));

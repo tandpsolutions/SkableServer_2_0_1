@@ -40,6 +40,7 @@ public class GetStockLedger extends HttpServlet {
         final String sr_cd = request.getParameter("sr_cd");
         final String from_date = request.getParameter("from_date");
         final String to_date = request.getParameter("to_date");
+        final String branch_cd = request.getParameter("branch_cd");
         final DBHelper helper = DBHelper.GetDBHelper();
         final Connection dataConnection = helper.getConnMpAdmin();
         final JsonObject jResultObj = new JsonObject();
@@ -50,8 +51,12 @@ public class GetStockLedger extends HttpServlet {
                         + " doc_ref_no,DOC_CD,DOC_DATE,CASE WHEN fname IS NULL THEN '' ELSE CONCAT(FNAME,' ',mname,' ',lname) END AS ac_name, "
                         + " CASE WHEN TRNS_ID='I' THEN PCS ELSE 0 END AS issue,CASE WHEN TRNS_ID= 'O' OR TRNS_ID='R' THEN PCS ELSE 0 END AS receipt,  "
                         + " (SELECT SUM(CASE WHEN TRNS_ID='I' THEN PCS*-1 ELSE PCS END) FROM OLDB0_2 WHERE SR_CD=? AND doc_date <? ) AS opb,o.RATE "
-                        + "  FROM OLDB0_2 o LEFT JOIN ACNTMST a  ON o.AC_CD=a.AC_CD WHERE DOC_DATE >=? AND DOC_DATE <=? AND SR_CD=? "
-                        + " ORDER BY doc_date,doc_ref_no";
+                        + "  FROM OLDB0_2 o LEFT JOIN ACNTMST a  ON o.AC_CD=a.AC_CD WHERE DOC_DATE >=? AND DOC_DATE <=? AND SR_CD=? ";
+
+                if (!branch_cd.equalsIgnoreCase("0")) {
+                    sql += " and o.branch_cd=" + branch_cd;
+                }
+                sql += " ORDER BY doc_date,doc_ref_no";
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
 
                 pstLocal.setString(1, sr_cd);

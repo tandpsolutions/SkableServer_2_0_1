@@ -58,7 +58,7 @@ public class CreditNoteReport extends HttpServlet {
                         + "  "
                         + " left join SERIESMST s on t.SR_CD=s.SR_CD left join MODELMST m on s.MODEL_CD=m.MODEL_CD left join TYPEMST t1 on m.TYPE_CD=t1.TYPE_CD "
                         + " left join VILSHD sales on t.SALE_REF_NO=sales.REF_NO where t.PUR_DATE>='" + from_date + "' "
-                        + " and t.PUR_DATE<='" + to_date + "' ";
+                        + " and t.PUR_DATE<='" + to_date + "' and (IMEI_NO <>'' or SERAIL_NO <>'')";
                 if (sales) {
 
                 } else {
