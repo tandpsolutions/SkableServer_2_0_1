@@ -309,6 +309,18 @@ public class GetDataFromServer extends HttpServlet {
                         jResultObj.addProperty("Cause", "success");
                         jResultObj.add("data", array);
                         break;
+                    case 38:
+                        array = lb.getLastRateMRP(dataConnection, request.getParameter("sr_cd"));
+                        jResultObj.addProperty("result", 1);
+                        jResultObj.addProperty("Cause", "success");
+                        jResultObj.add("data", array);
+                        break;
+                    case 39:
+                        String qt_ref_no = request.getParameter("ref_no");
+                        array = lb.getQuoteBill(dataConnection, qt_ref_no);
+                        jResultObj.addProperty("result", 1);
+                        jResultObj.addProperty("Cause", "success");
+                        jResultObj.add("data", array);
                 }
             } catch (SQLNonTransientConnectionException ex1) {
                 jResultObj.addProperty("result", -1);

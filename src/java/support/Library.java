@@ -528,6 +528,24 @@ public class Library {
         return array;
     }
 
+    public JsonArray getLastRateMRP(Connection dataConnection, String sr_cd) throws SQLException {
+        String sql = "select MRP from lbrphd l left join lbrpdt l1 on l.REF_NO=l1.REF_NO where l.IS_DEL=0 and l1.sr_cd='" + sr_cd + "' "
+                + " order by l.ref_no desc";
+        final PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
+        final ResultSet rsLocal = pstLocal.executeQuery();
+        final JsonArray array = new JsonArray();
+        final JsonObject object = new JsonObject();
+        if (rsLocal.next()) {
+            object.addProperty("rate", rsLocal.getString("MRP"));
+            array.add(object);
+        } else {
+            object.addProperty("rate", "0.00");
+            array.add(object);
+        }
+
+        return array;
+    }
+
     public JsonArray getLastRateSales(Connection dataConnection, String ac_cd, String sr_cd) throws SQLException {
         String sql = "select rate from vilshd l left join vilsdt l1 on l.REF_NO=l1.REF_NO where l.IS_DEL=0 and l1.sr_cd='" + sr_cd + "' "
                 + " and l.ac_cd='" + ac_cd + "' order by l.ref_no desc";
@@ -955,6 +973,49 @@ public class Library {
             object.addProperty("NLC", rsLocal.getString("NLC"));
             object.addProperty("SCHEME_NAME", rsLocal.getString("scheme_name"));
             object.addProperty("IS_MAIN", rsLocal.getInt("IS_MAIN"));
+            array.add(object);
+        }
+        closeResultSet(rsLocal);
+        closeStatement(pstLocal);
+        closeConnection(dataConnection);
+        return array;
+    }
+
+    public JsonArray getQuoteBill(Connection dataConnection, String ref_no) throws SQLException {
+        String sql = "select l.remark,l.REF_NO,l.INV_NO,l.V_DATE,l.AC_CD,a.FNAME,a1.ADD1,p.MOBILE1,l.DUE_DATE,l.BRANCH_CD,l.NET_AMT,l.IS_DEL"
+                + ",l.EDIT_NO,l.USER_ID,l.TIME_STAMP,l1.SR_NO,s.SR_NAME,s.SR_ALIAS,l1.QTY,l1.RATE,"
+                + " l1.AMOUNT,l1.sr_cd,l1.disc_per,l1.mrp from quotationhd l left join quotationdt l1 on l.REF_NO=l1.REF_NO left join SERIESMST s on s.SR_CD=l1.SR_CD "
+                + " left join acntmst a on l.ac_cd=a.ac_cd left join adbkmst a1 on a.ac_cd=a1.ac_cd left join phbkmst p on a.ac_cd=p.ac_cd "
+                + " where l.REF_NO='" + ref_no + "'";
+        PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
+        ResultSet rsLocal = pstLocal.executeQuery();
+        JsonArray array = new JsonArray();
+        while (rsLocal.next()) {
+            JsonObject object = new JsonObject();
+            object.addProperty("REF_NO", rsLocal.getString("REF_NO"));
+            object.addProperty("INV_NO", rsLocal.getInt("INV_NO"));
+            object.addProperty("V_DATE", rsLocal.getString("V_DATE"));
+            object.addProperty("DUE_DATE", rsLocal.getString("DUE_DATE"));
+            object.addProperty("BRANCH_CD", rsLocal.getInt("BRANCH_CD"));
+            object.addProperty("AC_CD", rsLocal.getString("AC_CD"));
+            object.addProperty("FNAME", rsLocal.getString("FNAME"));
+            object.addProperty("ADD1", rsLocal.getString("ADD1"));
+            object.addProperty("MOBILE1", rsLocal.getString("MOBILE1"));
+            object.addProperty("NET_AMT", rsLocal.getDouble("NET_AMT"));
+            object.addProperty("IS_DEL", rsLocal.getInt("IS_DEL"));
+            object.addProperty("EDIT_NO", rsLocal.getInt("EDIT_NO"));
+            object.addProperty("USER_ID", getUserName(rsLocal.getString("user_id")));
+            object.addProperty("TIME_STAMP", rsLocal.getString("TIME_STAMP"));
+            object.addProperty("SR_NO", rsLocal.getString("SR_NO"));
+            object.addProperty("SR_CD", rsLocal.getString("SR_CD"));
+            object.addProperty("SR_NAME", rsLocal.getString("SR_NAME"));
+            object.addProperty("SR_ALIAS", rsLocal.getString("SR_ALIAS"));
+            object.addProperty("QTY", rsLocal.getInt("QTY"));
+            object.addProperty("RATE", rsLocal.getString("RATE"));
+            object.addProperty("AMT", rsLocal.getString("AMOUNT"));
+            object.addProperty("REMARK", rsLocal.getString("REMARK"));
+            object.addProperty("DISC_RATE", rsLocal.getString("DISC_PER"));
+            object.addProperty("MRP", rsLocal.getString("MRP"));
             array.add(object);
         }
         closeResultSet(rsLocal);
@@ -1441,7 +1502,7 @@ public class Library {
         }
         return array;
     }
-    
+
     public JsonArray getTidMaster(Connection dataConnection, String field, String value) throws SQLException {
         String sql = "select TID_CD,TID_NAME from TIDMST WHERE " + field + " like '%" + value + "%'";
         PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
@@ -1455,9 +1516,6 @@ public class Library {
         }
         return array;
     }
-    
-    
-    
 
     public JsonArray getCashDetail(Connection dataConnection, String field, String value) throws SQLException {
         String sql = "SELECT c.REF_NO,VDATE,a.FNAME,c1.BAL,c1.REMARK,c.USER_ID,c.EDIT_NO,c.TIME_STAMP,a.AC_CD,o.DOC_REF_NO,o.INV_NO,o.DOC_CD FROM CPRHD "

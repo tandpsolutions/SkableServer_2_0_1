@@ -45,6 +45,7 @@ public class CreditNoteReport extends HttpServlet {
         final JsonObject jResultObj = new JsonObject();
         final String model_cd = (request.getParameter("model_cd"));
         final String brand_cd = (request.getParameter("brand_cd"));
+        final String branch_cd = (request.getParameter("branch_cd"));
         final String memory_cd = (request.getParameter("memory_cd"));
         final String type_cd = (request.getParameter("type_cd"));
         final boolean sales = Boolean.parseBoolean((request.getParameter("sales")));
@@ -57,8 +58,7 @@ public class CreditNoteReport extends HttpServlet {
                         + ",t.branch_cd from tag t "
                         + "  "
                         + " left join SERIESMST s on t.SR_CD=s.SR_CD left join MODELMST m on s.MODEL_CD=m.MODEL_CD left join TYPEMST t1 on m.TYPE_CD=t1.TYPE_CD "
-                        + " left join VILSHD sales on t.SALE_REF_NO=sales.REF_NO where t.PUR_DATE>='" + from_date + "' "
-                        + " and t.PUR_DATE<='" + to_date + "' and (IMEI_NO <>'' or SERAIL_NO <>'')";
+                        + " left join VILSHD sales on t.SALE_REF_NO=sales.REF_NO where t.PUR_DATE<='" + to_date + "' and (IMEI_NO <>'' or SERAIL_NO <>'')";
                 if (sales) {
 
                 } else {
@@ -80,7 +80,7 @@ public class CreditNoteReport extends HttpServlet {
                 if (!ac_cd.equalsIgnoreCase("")) {
                     sql += " and sales.ac_cd='" + ac_cd + "'";
                 }
-                sql += " and t.is_del <> -1 order by t.PUR_DATE";
+                sql += " order by t.PUR_DATE";
                 pstLocal = dataConnection.prepareStatement(sql);
                 ResultSet viewDataRs = pstLocal.executeQuery();
 
@@ -100,8 +100,13 @@ public class CreditNoteReport extends HttpServlet {
                     object.addProperty("backend", viewDataRs.getString("backend"));
                     object.addProperty("activation", viewDataRs.getString("activation"));
                     object.addProperty("prize_drop", viewDataRs.getString("prize_drop"));
-                    object.addProperty("branch_cd", viewDataRs.getString("branch_cd"));
-                    array.add(object);
+                    String data_branch_cd = getBranch_cd(viewDataRs.getString("pcs"), to_date, dataConnection);
+                    object.addProperty("branch_cd", data_branch_cd);
+                    if (branch_cd.equalsIgnoreCase("0")) {
+                        array.add(object);
+                    } else if (branch_cd.equalsIgnoreCase(data_branch_cd)) {
+                        array.add(object);
+                    }
                 }
 
                 jResultObj.addProperty("result", 1);
@@ -117,6 +122,26 @@ public class CreditNoteReport extends HttpServlet {
         }
         response.getWriter().print(jResultObj);
 
+    }
+
+    private String getBranch_cd(String tag_no, String date, Connection datConnection) throws SQLException {
+        String sql = "select BRANCH_CD from oldb0_2 where tag_no='" + tag_no + "' and TRNS_ID='R'  and doc_date <='" + date + "' "
+                + " and doc_cd <>'PB' order  by doc_date desc";
+        PreparedStatement pstLocal = datConnection.prepareStatement(sql);
+        ResultSet rs = pstLocal.executeQuery();
+        if (rs.next()) {
+            return rs.getString("branch_cd");
+        } else {
+            sql = "select BRANCH_CD from oldb0_2 where tag_no='" + tag_no + "' and TRNS_ID='R'  and doc_date <='" + date + "' "
+                    + " and doc_cd <>'STF' order by doc_date desc";
+            pstLocal = datConnection.prepareStatement(sql);
+            rs = pstLocal.executeQuery();
+            if (rs.next()) {
+                return rs.getString("branch_cd");
+            } else {
+                return "1";
+            }
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

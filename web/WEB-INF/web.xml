@@ -800,6 +800,18 @@
         <servlet-name>AddUpdateTidMaster</servlet-name>
         <servlet-class>tid.AddUpdateTidMaster</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetQuotationHeader</servlet-name>
+        <servlet-class>quotation.GetQuotationHeader</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteQuotationBill</servlet-name>
+        <servlet-class>quotation.DeleteQuotationBill</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddUpdateQuotation</servlet-name>
+        <servlet-class>quotation.AddUpdateQuotation</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ValidateLogin</servlet-name>
         <url-pattern>/ValidateLogin</url-pattern>
@@ -1595,6 +1607,18 @@
     <servlet-mapping>
         <servlet-name>AddUpdateTidMaster</servlet-name>
         <url-pattern>/AddUpdateTidMaster</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetQuotationHeader</servlet-name>
+        <url-pattern>/GetQuotationHeader</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteQuotationBill</servlet-name>
+        <url-pattern>/DeleteQuotationBill</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddUpdateQuotation</servlet-name>
+        <url-pattern>/AddUpdateQuotation</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
