@@ -70,7 +70,7 @@ public class TypeWiseProftStatement extends HttpServlet {
                 if (!branch_cd.equalsIgnoreCase("0")) {
                     sql += " and v.branch_cd=" + branch_cd + "";
                 }
-                sql += " group by TYPE_NAME,branch_cd  order by type_name";
+                sql += " group by MODEL_NAME,branch_cd  order by type_name";
                 pstLocal = dataConnection.prepareStatement(sql);
                 ResultSet viewDataRs = pstLocal.executeQuery();
 

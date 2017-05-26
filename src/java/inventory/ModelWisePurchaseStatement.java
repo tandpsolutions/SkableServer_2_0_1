@@ -57,7 +57,7 @@ public class ModelWisePurchaseStatement extends HttpServlet {
                         + " FROM oldb0_2 o LEFT JOIN seriesmst s ON o.SR_CD=s.SR_CD LEFT JOIN modelmst m ON m.MODEL_CD=s.MODEL_CD WHERE TRNS_ID='R' "
                         + "  AND m.MODEL_NAME IS NOT NULL  "
                         + " and o.DOC_DATE>='" + from_date + "' "
-                        + " and o.DOC_DATE<='" + to_date + "' ";
+                        + " and o.DOC_DATE<='" + to_date + "' and o.doc_cd <> 'STF'";
                 if (!type_cd.equalsIgnoreCase("")) {
                     sql += " and m.type_cd='" + type_cd + "'";
                 }

@@ -39,6 +39,7 @@ public class UpdateOLDB2_4 extends HttpServlet {
 
         final String unpaid_amt = request.getParameter("unpaid_amt");
         final String doc_ref_no = request.getParameter("doc_ref_no");
+        final String ac_cd = request.getParameter("ac_cd");
         final DBHelper helper = DBHelper.GetDBHelper();
         final Connection dataConnection = helper.getConnMpAdmin();
         final JsonObject jResultObj = new JsonObject();
@@ -46,10 +47,11 @@ public class UpdateOLDB2_4 extends HttpServlet {
             try {
 
                 PreparedStatement pstLocal = null;
-                String sql = "UPDATE oldb2_4 SET unpaid_amt=? WHERE doc_ref_no=?";
+                String sql = "UPDATE oldb2_4 SET unpaid_amt=? WHERE doc_ref_no=? and ac_cd=?";
                 pstLocal = dataConnection.prepareStatement(sql);
                 pstLocal.setString(1, unpaid_amt);
                 pstLocal.setString(2, doc_ref_no);
+                pstLocal.setString(3, ac_cd);
                 pstLocal.executeUpdate();
                 jResultObj.addProperty("result", 1);
                 jResultObj.addProperty("Cause", "success");

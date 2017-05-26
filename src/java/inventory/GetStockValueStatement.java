@@ -69,12 +69,12 @@ public class GetStockValueStatement extends HttpServlet {
                     if (!code.equalsIgnoreCase("")) {
                         sql += " and b.BRAND_CD='" + code + "'";
                     }
-                } 
+                }
                 if (mode.equalsIgnoreCase("series")) {
                     if (!code.equalsIgnoreCase("")) {
                         sql += " and s.sr_cd='" + code + "'";
                     }
-                } 
+                }
                 if (mode.equalsIgnoreCase("model")) {
                     if (!code.equalsIgnoreCase("")) {
                         sql += " and m.model_cd='" + code + "'";
@@ -104,7 +104,7 @@ public class GetStockValueStatement extends HttpServlet {
                 if (!type_cd.equalsIgnoreCase("")) {
                     sql += " and m.type_cd='" + type_cd + "'";
                 }
-                
+
                 if (!sub_type_cd.equalsIgnoreCase("")) {
                     sql += " and m.sub_type_cd='" + sub_type_cd + "'";
                 }
@@ -123,7 +123,7 @@ public class GetStockValueStatement extends HttpServlet {
                     object.addProperty("SR_NAME", rsLocal.getString("SR_NAME"));
                     object.addProperty("SR_ALIAS", rsLocal.getString("SR_ALIAS"));
                     object.addProperty("MODEL_NAME", rsLocal.getString("MODEL_NAME"));
-                    object.addProperty("IMEI_NO", rsLocal.getString("IMEI_NO"));
+                    object.addProperty("IMEI_NO", rsLocal.getString("IMEI_NO").toUpperCase());
                     object.addProperty("PUR_RATE", rsLocal.getDouble("PUR_RATE"));
                     object.addProperty("V_DATE", rsLocal.getString("V_DATE"));
                     object.addProperty("AC_NAME", rsLocal.getString("FNAME"));

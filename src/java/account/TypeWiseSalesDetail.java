@@ -59,7 +59,7 @@ public class TypeWiseSalesDetail extends HttpServlet {
             try {
 
                 PreparedStatement pstLocal = null;
-                String sql = "select v.inv_no,v.branch_cd,v.ref_no,a.fname,s.sr_name,v.v_date,t.TYPE_NAME,concat(a1.add1,a1.add2,a1.add3) as address"
+                String sql = "select m.model_name,v.inv_no,v.branch_cd,v.ref_no,a.fname,s.sr_name,v.v_date,t.TYPE_NAME,concat(a1.add1,a1.add2,a1.add3) as address"
                         + " ,v1.tag_no as IMEI_NO,(v1.qty) as pcs,(v1.RATE) as tot_sales,v.remark"
                         + " ,t1.ac_name AS pur_party,ac1.fname as pur_party_ac,MOBILE1,email,sm.sm_name from VILSHD v left join vilsdt v1 on v.REF_NO=v1.REF_NO "
                         + " left join SERIESMST s on v1.SR_CD=s.SR_CD left join acntmst a on v.ac_cd=a.ac_cd "
@@ -107,6 +107,7 @@ public class TypeWiseSalesDetail extends HttpServlet {
                     JsonObject object = new JsonObject();
                     object.addProperty("fname", viewDataRs.getString("fname"));
                     object.addProperty("inv_no", viewDataRs.getString("inv_no"));
+                    object.addProperty("model_name", viewDataRs.getString("model_name"));
                     object.addProperty("sr_name", viewDataRs.getString("sr_name"));
                     object.addProperty("v_date", viewDataRs.getString("v_date"));
                     object.addProperty("type_name", viewDataRs.getString("type_name"));
@@ -125,7 +126,7 @@ public class TypeWiseSalesDetail extends HttpServlet {
                 }
 
                 if (sales_return && scheme_cd.equalsIgnoreCase("0")) {
-                    sql = "select  v.branch_cd,v.ref_no,a.fname,s.sr_name,v.v_date,t.TYPE_NAME,concat(a1.add1,a1.add2,a1.add3) as address"
+                    sql = "select   m.model_name,v.branch_cd,v.ref_no,a.fname,s.sr_name,v.v_date,t.TYPE_NAME,concat(a1.add1,a1.add2,a1.add3) as address"
                             + " ,case when IMEI_NO ='' then SERAIL_NO else IMEI_NO end as IMEI_NO,(v1.qty) as pcs,(v1.RATE) as tot_sales"
                             + " ,MOBILE1,email,v.remark from srhd v left join srdt v1 on"
                             + " v.REF_NO=v1.REF_NO "
@@ -160,6 +161,7 @@ public class TypeWiseSalesDetail extends HttpServlet {
                         JsonObject object = new JsonObject();
                         object.addProperty("fname", viewDataRs.getString("fname"));
                         object.addProperty("sr_name", viewDataRs.getString("sr_name"));
+                        object.addProperty("model_name", viewDataRs.getString("model_name"));
                         object.addProperty("v_date", viewDataRs.getString("v_date"));
                         object.addProperty("type_name", viewDataRs.getString("type_name"));
                         object.addProperty("pcs", viewDataRs.getInt("pcs") * -1);

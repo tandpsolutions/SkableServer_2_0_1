@@ -53,7 +53,7 @@ public class SalesRegisterDetail extends HttpServlet {
             try {
 
                 PreparedStatement pstLocal = null;
-                String sql = "select v.ins_amt,v.ref_no,case when v.V_TYPE=0 then 'Retail Invoice' when v.v_type=1 then 'Tax Invoice'"
+                String sql = "select v1.tag_no,v.ins_amt,v.ref_no,case when v.V_TYPE=0 then 'Retail Invoice' when v.v_type=1 then 'Tax Invoice'"
                         + " else 'Retail Insurace Bill' end as v_type,v.INV_NO,v.V_DATE,v.PMT_MODE,"
                         + " case when a.FNAME is null then '' else fname end as fname,s.SR_ALIAS,s.SR_NAME,v1.IMEI_NO,"
                         + " v1.SERAIL_NO,v1.QTY,v1.RATE,v1.BASIC_AMT,v1.TAX_AMT,v1.ADD_TAX_AMT,v1.DISC_RATE,v1.MRP,v1.AMT,v.NET_AMT,p.CASH_AMT,"
@@ -85,6 +85,7 @@ public class SalesRegisterDetail extends HttpServlet {
                     object.addProperty("v_type", viewDataRs.getString("V_TYPE"));
                     object.addProperty("inv_no", viewDataRs.getString("inv_no"));
                     object.addProperty("fname", viewDataRs.getString("FNAME"));
+                    object.addProperty("TAG_NO", viewDataRs.getString("TAG_NO"));
                     object.addProperty("SR_ALIAS", viewDataRs.getString("SR_ALIAS"));
                     object.addProperty("SR_NAME", viewDataRs.getString("SR_NAME"));
                     object.addProperty("IMEI_NO", viewDataRs.getString("IMEI_NO"));

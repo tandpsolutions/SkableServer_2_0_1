@@ -13,8 +13,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -165,7 +168,10 @@ public class AddUpdatePurchaseBill extends HttpServlet {
                 for (int i = 0; i < detail.size(); i++) {
                     if (lb.getData(dataConnection, "ref_no", "TAG", "ref_no", detail.get(i).getPUR_TAG_NO(), 0).equalsIgnoreCase("")) {
                         if (detail.get(i).getTAG_NO().equalsIgnoreCase("")) {
-                            String pref = getMonth() + (Calendar.getInstance().get(Calendar.YEAR) + "").substring(2);
+                            Date dt = new SimpleDateFormat("yyyy-MM-dd").parse(header.getV_DATE());
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTime(dt);
+                            String pref = getMonth(cal) + (cal.get(Calendar.YEAR) + "").substring(2);
                             if (header.getV_TYPE() == 2) {
                                 pref = "Z" + pref;
                             }
@@ -311,6 +317,15 @@ public class AddUpdatePurchaseBill extends HttpServlet {
                     dataConnection.setAutoCommit(true);
                 } catch (Exception e) {
                 }
+            } catch (ParseException ex) {
+                ex.printStackTrace();
+                jResultObj.addProperty("result", -1);
+                jResultObj.addProperty("Cause", ex.getMessage());
+                try {
+                    dataConnection.rollback();
+                    dataConnection.setAutoCommit(true);
+                } catch (Exception e) {
+                }
             } finally {
                 lb.closeConnection(dataConnection);
             }
@@ -318,8 +333,9 @@ public class AddUpdatePurchaseBill extends HttpServlet {
         return jResultObj;
     }
 
-    private String getMonth() {
-        switch (Calendar.getInstance().get(Calendar.MONTH) + 1) {
+    private String getMonth(Calendar cal) {
+
+        switch (cal.get(Calendar.MONTH) + 1) {
             case 1:
                 return "A";
             case 2:
@@ -348,6 +364,7 @@ public class AddUpdatePurchaseBill extends HttpServlet {
                 return "Z";
         }
     }
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

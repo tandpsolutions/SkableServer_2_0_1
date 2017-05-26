@@ -41,6 +41,7 @@ public class GetStockLedger extends HttpServlet {
         final String from_date = request.getParameter("from_date");
         final String to_date = request.getParameter("to_date");
         final String branch_cd = request.getParameter("branch_cd");
+        final String doc_cd = request.getParameter("doc_cd");
         final DBHelper helper = DBHelper.GetDBHelper();
         final Connection dataConnection = helper.getConnMpAdmin();
         final JsonObject jResultObj = new JsonObject();
@@ -59,6 +60,9 @@ public class GetStockLedger extends HttpServlet {
 
                 if (!branch_cd.equalsIgnoreCase("0")) {
                     sql += " and o.branch_cd=" + branch_cd;
+                }
+                if (!doc_cd.equalsIgnoreCase("ALL")) {
+                    sql += " and doc_cd='" + doc_cd + "'";
                 }
                 sql += " ORDER BY doc_date,doc_ref_no";
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);

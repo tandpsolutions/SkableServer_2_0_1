@@ -46,13 +46,15 @@ public class IMEWisePS extends HttpServlet {
         final String type_cd = request.getParameter("type_cd");
         final String sub_type_cd = request.getParameter("sub_type_cd");
         final String bill_no = request.getParameter("bill_no");
+        final String branch_cd = request.getParameter("branch_cd");
         final DBHelper helper = DBHelper.GetDBHelper();
         final Connection dataConnection = helper.getConnMpAdmin();
         final JsonObject jResultObj = new JsonObject();
         Library lb = Library.getInstance();
         if (dataConnection != null) {
             try {
-                String sql = "select a.FNAME,a1.FNAME as SALE_PARTY,s.SR_ALIAS,l.V_DATE,TAG_NO,SR_NAME,PUR_RATE,SALE_RATE,b.BRAND_NAME,t.MRP from tag t left join  SERIESMST s on t.sr_cd=s.sr_cd"
+                String sql = "select t.branch_cd,a.FNAME,a1.FNAME as SALE_PARTY,s.SR_ALIAS,l.V_DATE,TAG_NO,SR_NAME,PUR_RATE,SALE_RATE,"
+                        + " b.BRAND_NAME,t.MRP from tag t left join  SERIESMST s on t.sr_cd=s.sr_cd"
                         + " left join MODELMST m on s.model_cd=m.model_cd left join brandmst b on m.brand_cd=b.brand_cd "
                         + " left join LBRPHD l on l.REF_NO=t.PUR_REF_NO left join ACNTMST a on l.AC_CD=a.AC_CD "
                         + " left join vilshd v on v.REF_NO=t.SALE_REF_NO left join ACNTMST a1 on v.AC_CD=a1.AC_CD"
@@ -82,6 +84,9 @@ public class IMEWisePS extends HttpServlet {
                 if (!sub_type_cd.equalsIgnoreCase("")) {
                     sql += " and m.sub_type_cd ='" + sub_type_cd + "'";
                 }
+                if (!branch_cd.equalsIgnoreCase("0")) {
+                    sql += " and t.branch_cd =" + branch_cd;
+                }
                 sql += " order by l.v_date,TAG_NO,s.sr_name";
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
                 ResultSet rsLocal = pstLocal.executeQuery();
@@ -98,6 +103,7 @@ public class IMEWisePS extends HttpServlet {
                     object.addProperty("SALE_PARTY", rsLocal.getString("SALE_PARTY"));
                     object.addProperty("SR_ALIAS", rsLocal.getString("SR_ALIAS"));
                     object.addProperty("MRP", rsLocal.getString("MRP"));
+                    object.addProperty("BRANCH_CD", rsLocal.getString("BRANCH_CD"));
                     array.add(object);
                 }
                 lb.closeResultSet(rsLocal);

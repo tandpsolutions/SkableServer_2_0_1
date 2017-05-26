@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package DC;
 
 import com.google.gson.JsonArray;
@@ -51,7 +50,7 @@ public class GetDCBill extends HttpServlet {
 
         if (dataConnection != null) {
             try {
-                String sql = "select v1.remark,v.REF_NO,v.INV_NO,v.V_DATE,v.V_TYPE,a.FNAME,a.AC_CD,p.MOBILE1,v.DET_TOT,v1.TAG_NO,v1.sr_cd,s.SR_NAME,v1.IMEI_NO"
+                String sql = "select v.branch_cd,v1.remark,v.REF_NO,v.INV_NO,v.V_DATE,v.V_TYPE,a.FNAME,a.AC_CD,p.MOBILE1,v.DET_TOT,v1.TAG_NO,v1.sr_cd,s.SR_NAME,v1.IMEI_NO"
                         + ",v1.SERAIL_NO,v1.RATE,v1.AMT,v1.PUR_TAG_NO,v1.QTY from DCHD v left join DCDT v1 on v.REF_NO = v1.REF_NO\n"
                         + " left join ACNTMST a on v.AC_CD=a.AC_CD left join PHBKMST p on a.AC_CD=p.AC_CD \n"
                         + " left join SERIESMST s on s.SR_CD=v1.SR_CD where v.ref_no=?";
@@ -79,6 +78,7 @@ public class GetDCBill extends HttpServlet {
                     object.addProperty("AMT", rsLocal.getDouble("AMT"));
                     object.addProperty("PUR_TAG_NO", rsLocal.getString("PUR_TAG_NO"));
                     object.addProperty("REMARK", rsLocal.getString("REMARK"));
+                    object.addProperty("BRANCH_CD", rsLocal.getString("BRANCH_CD"));
                     array.add(object);
                 }
 //                response.getWriter().print(array.toString());

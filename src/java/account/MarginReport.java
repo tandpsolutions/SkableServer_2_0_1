@@ -62,7 +62,7 @@ public class MarginReport extends HttpServlet {
                         + " v.v_date<='" + to_date + "'  and v.is_del=0 and t.is_del=1 AND v1.TAG_NO<>'' AND v1.SR_CD=t.SR_CD ";
 
                 if (mode.equalsIgnoreCase("1")) {
-                    sql += " and (PUR_RATE-SALE_RATE) <0";
+                    sql += " and (v1.amt-PUR_RATE) <0";
                 }
 
                 if (v_type != 0) {
@@ -70,11 +70,11 @@ public class MarginReport extends HttpServlet {
                 }
 
                 if (mode.equalsIgnoreCase("2")) {
-                    sql += " and (PUR_RATE-SALE_RATE) =0";
+                    sql += " and (v1.AMT-PUR_RATE) =0";
                 }
 
                 if (mode.equalsIgnoreCase("3")) {
-                    sql += " and (PUR_RATE-SALE_RATE) >0";
+                    sql += " and (v1.AMT-PUR_RATE) >0";
                 }
 
                 if (!type_cd.equalsIgnoreCase("")) {

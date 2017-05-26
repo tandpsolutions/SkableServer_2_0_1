@@ -57,11 +57,22 @@ public class GetBranchMaster extends HttpServlet {
                     object.addProperty("phone", rsLocal.getString("phone"));
                     array.add(object);
                 }
+
+                sql = "select * from dbmst order by db_year desc";
+                pstLocal = dataConnection.prepareStatement(sql);
+                rsLocal = pstLocal.executeQuery();
+                JsonArray year_array = new JsonArray();
+                while (rsLocal.next()) {
+                    JsonObject object = new JsonObject();
+                    object.addProperty("db_year", rsLocal.getString("db_year"));
+                    year_array.add(object);
+                }
                 lb.closeResultSet(rsLocal);
                 lb.closeStatement(pstLocal);
                 jResultObj.addProperty("result", 1);
                 jResultObj.addProperty("Cause", "success");
                 jResultObj.add("data", array);
+                jResultObj.add("year", year_array);
             } catch (SQLNonTransientConnectionException ex1) {
                 jResultObj.addProperty("result", -1);
                 jResultObj.addProperty("Cause", "Server is down");
