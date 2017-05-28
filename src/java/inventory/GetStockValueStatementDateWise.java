@@ -62,7 +62,7 @@ public class GetStockValueStatementDateWise extends HttpServlet {
                         + " from OLDB0_2 o  \n"
                         + " left join SERIESMST s on o.SR_CD=s.SR_CD left join MODELMST m on s.MODEL_CD=m.MODEL_CD"
                         + " left join typemst t on m.type_cd=t.type_cd \n"
-                            + " where o.DOC_DATE>='" + from_date + "' and o.DOC_DATE<='" + to_date + "' ";
+                            + " where o.DOC_DATE>='" + from_date + "' and o.DOC_DATE<='" + to_date + "' and doc_cd <>'STF' ";
 
                 if (!type_cd.equalsIgnoreCase("")) {
                     sql += " and m.type_cd='" + type_cd + "' ";
@@ -113,7 +113,7 @@ public class GetStockValueStatementDateWise extends HttpServlet {
                         + " left join typemst t on m.type_cd=t.type_cd \n"
                         + " where o.DOC_DATE<'" + from_date + "'"
                         + " and s.sr_cd not in(select distinct(sr_cd) from oldb0_2 where doc_date >='" + from_date + "' "
-                        + " and doc_date<='" + to_date + "')";
+                        + " and doc_date<='" + to_date + "') and doc_cd <>'STF' ";
 
                 if (!type_cd.equalsIgnoreCase("")) {
                     sql += " and m.type_cd='" + type_cd + "' ";

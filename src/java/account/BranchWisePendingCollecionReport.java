@@ -74,6 +74,7 @@ public class BranchWisePendingCollecionReport extends HttpServlet {
                     object.addProperty("INV_NO", viewDataRs.getString("INV_NO"));
                     object.addProperty("DOC_REF_NO", viewDataRs.getString("DOC_REF_NO"));
                     object.addProperty("AC_CD", viewDataRs.getString("AC_CD"));
+                    object.addProperty("DOC_CD", "");
                     object.addProperty("UNPAID_AMT", viewDataRs.getDouble("UNPAID_AMT"));
                     object.addProperty("DUE_DATE", viewDataRs.getString("DUE_DATE"));
                     object.addProperty("branch_cd", viewDataRs.getString("branch_cd"));
