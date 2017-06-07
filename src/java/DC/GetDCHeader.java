@@ -44,17 +44,21 @@ public class GetDCHeader extends HttpServlet {
         final String from_date = request.getParameter("from_date");
         final String to_date = request.getParameter("to_date");
         final String v_type = request.getParameter("v_type");
+        final String branch_cd = request.getParameter("branch_cd");
         if (dataConnection == null) {
             dataConnection = helper.getConnMpAdmin();
         }
 
         if (dataConnection != null) {
             try {
-                String sql = "select l.ac_cd,l.REF_NO,l.INV_NO,l.V_TYPE,concat(a.FNAME,' ',a.MNAME,' ',a.LNAME) as ac_name,l.V_DATE,'' as BILL_NO,l1.AMT,"
+                String sql = "select l.branch_cd,l.ac_cd,l.REF_NO,l.INV_NO,l.V_TYPE,concat(a.FNAME,' ',a.MNAME,' ',a.LNAME) as ac_name,l.V_DATE,'' as BILL_NO,l1.AMT,"
                         + "l1.IMEI_NO,l1.SERAIL_NO,s.SR_NAME,l1.remark"
                         + " from DCHD l left join DCDT l1 on l.REF_NO=l1.REF_NO left join SERIESMST s on l1.SR_CD = s.SR_CD\n"
-                        + "left join ACNTMST a on l.AC_CD=a.AC_CD where v_date>=? and v_date<=? and v_type=? and is_del=0"
-                        + " order by v_date,inv_no";
+                        + "left join ACNTMST a on l.AC_CD=a.AC_CD where v_date>=? and v_date<=? and v_type=? and is_del=0";
+                if (!branch_cd.equalsIgnoreCase("0")) {
+                    sql += " and l.branch_cd=" + branch_cd;
+                }
+                sql += " order by v_date,inv_no";
 //                response.getWriter().print(from_date);
 //                response.getWriter().print(to_date);
 //                response.getWriter().print(sql);
@@ -78,6 +82,7 @@ public class GetDCHeader extends HttpServlet {
                     object.addProperty("NET_AMT", rsLocal.getString("AMT"));
                     object.addProperty("REMARK", rsLocal.getString("REMARK"));
                     object.addProperty("AC_CD", rsLocal.getString("AC_CD"));
+                    object.addProperty("BRANCH_CD", rsLocal.getString("BRANCH_CD"));
                     array.add(object);
                 }
 //                response.getWriter().print(array.toString());

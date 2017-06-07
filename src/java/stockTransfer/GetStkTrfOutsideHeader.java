@@ -54,15 +54,16 @@ public class GetStkTrfOutsideHeader extends HttpServlet {
         if (dataConnection != null) {
             try {
                 String sql = "SELECT remark,ref_no,inv_no,v_date,from_loc,to_loc,approve_by FROM stktrfouthd s WHERE  v_date>=? AND v_date<=? ";
-                if (v_type.equalsIgnoreCase("0")) {
-                    sql += "and from_loc = ?";
-                } else {
-                    sql += "and to_loc = ?";
+                if (!loc.equalsIgnoreCase("0")) {
+                    if (v_type.equalsIgnoreCase("0")) {
+                        sql += "and from_loc = " + loc;
+                    } else {
+                        sql += "and to_loc = " + loc;
+                    }
                 }
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
                 pstLocal.setString(1, from_date);
                 pstLocal.setString(2, to_date);
-                pstLocal.setString(3, loc);
                 ResultSet rsLocal = pstLocal.executeQuery();
                 JsonArray array = new JsonArray();
                 while (rsLocal.next()) {
