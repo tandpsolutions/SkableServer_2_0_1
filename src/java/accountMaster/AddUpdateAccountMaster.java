@@ -111,16 +111,19 @@ public class AddUpdateAccountMaster extends HttpServlet {
             pstLocal.setInt(15, acc.getOPB_EFF());
             pstLocal.execute();
 
-            sql = "insert into adbkmst values(?,?,?,?,?,?)";
-            pstLocal = dataConnection.prepareStatement(sql);
-            pstLocal.setString(1, acc.getAC_CD());
-            pstLocal.setString(2, acc.getADD1());
-            pstLocal.setString(3, "");
-            pstLocal.setString(4, "");
-            int code = 0;
-            pstLocal.setInt(5, code);
-            pstLocal.setInt(6, code);
-            pstLocal.execute();
+            for (int i = 0; i < acc.getAddress().size(); i++) {
+                sql = "insert into adbkmst values(?,?,?,?,?,?,?)";
+                pstLocal = dataConnection.prepareStatement(sql);
+                pstLocal.setString(1, acc.getAC_CD());
+                pstLocal.setString(2, acc.getAddress().get(i));
+                pstLocal.setString(3, "");
+                pstLocal.setString(4, "");
+                int code = 0;
+                pstLocal.setInt(5, code);
+                pstLocal.setInt(6, code);
+                pstLocal.setInt(7, i + 1);
+                pstLocal.execute();
+            }
 
             sql = "insert into phbkmst values(?,?,?,?,?,?,?,0)";
             pstLocal = dataConnection.prepareStatement(sql);
@@ -151,11 +154,28 @@ public class AddUpdateAccountMaster extends HttpServlet {
             pstLocal.setString(10, acc.getAC_CD());
             pstLocal.execute();
 
-            sql = "update adbkmst set add1=? where ac_cd=?";
-            pstLocal = dataConnection.prepareStatement(sql);
-            pstLocal.setString(1, acc.getADD1());
-            pstLocal.setString(2, acc.getAC_CD());
-            pstLocal.execute();
+            for (int i = 0; i < acc.getAddress().size(); i++) {
+                if (!lb.getData(dataConnection, "sr_no", "adbkmst", "sr_no=" + (i + 1) + " and ac_cd", acc.getAC_CD(), 0).equalsIgnoreCase("")) {
+                    sql = "update adbkmst set add1=? where ac_cd=? and sr_no=?";
+                    pstLocal = dataConnection.prepareStatement(sql);
+                    pstLocal.setString(1, acc.getAddress().get(i));
+                    pstLocal.setString(2, acc.getAC_CD());
+                    pstLocal.setInt(3, i + 1);
+                    pstLocal.execute();
+                } else {
+                    sql = "insert into adbkmst values(?,?,?,?,?,?,?)";
+                    pstLocal = dataConnection.prepareStatement(sql);
+                    pstLocal.setString(1, acc.getAC_CD());
+                    pstLocal.setString(2, acc.getAddress().get(i));
+                    pstLocal.setString(3, "");
+                    pstLocal.setString(4, "");
+                    int code = 0;
+                    pstLocal.setInt(5, code);
+                    pstLocal.setInt(6, code);
+                    pstLocal.setInt(7, i + 1);
+                    pstLocal.execute();
+                }
+            }
 
             sql = "update phbkmst set mobile1=?,email=? where ac_cd=?";
             pstLocal = dataConnection.prepareStatement(sql);

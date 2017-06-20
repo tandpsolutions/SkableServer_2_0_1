@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package DC;
+package salesRetrurn;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,12 +23,9 @@ import support.Library;
 
 /**
  *
- * @author bhaumik
+ * @author indianic
  */
-public class GetDCBill extends HttpServlet {
-
-    DBHelper helper = DBHelper.GetDBHelper();
-    Library lb = Library.getInstance();
+public class GetSalesRateByTag extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,48 +38,26 @@ public class GetDCBill extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Connection dataConnection = null;
-
+        final String tag_no = request.getParameter("tag_no");
+        final DBHelper helper = DBHelper.GetDBHelper();
+        final Connection dataConnection = helper.getConnMpAdmin();
         final JsonObject jResultObj = new JsonObject();
-        final String ref_no = request.getParameter("ref_no");
-        if (dataConnection == null) {
-            dataConnection = helper.getConnMpAdmin();
-        }
-
+        Library lb = Library.getInstance();
         if (dataConnection != null) {
             try {
-                String sql = "select v.branch_cd,v1.remark,v.REF_NO,v.INV_NO,v.V_DATE,v.V_TYPE,a.FNAME,a.AC_CD,p.MOBILE1,v.DET_TOT,v1.TAG_NO,v1.sr_cd,v1.SR_NAME,v1.IMEI_NO"
-                        + ",v1.SERAIL_NO,v1.RATE,v1.AMT,v1.PUR_TAG_NO,v1.QTY from DCHD v left join DCDT v1 on v.REF_NO = v1.REF_NO\n"
-                        + " left join ACNTMST a on v.AC_CD=a.AC_CD left join PHBKMST p on a.AC_CD=p.AC_CD \n"
-                        + " where v.ref_no=?";
+                String sql = "select SALE_RATE from tag where tag_no=? and is_del=1";
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
-                pstLocal.setString(1, ref_no);
-                ResultSet rsLocal = pstLocal.executeQuery();
+                pstLocal.setString(1, tag_no);
+                ResultSet viewDataRs = pstLocal.executeQuery();
                 JsonArray array = new JsonArray();
-                while (rsLocal.next()) {
+                while (viewDataRs.next()) {
                     JsonObject object = new JsonObject();
-                    object.addProperty("REF_NO", rsLocal.getString("REF_NO"));
-                    object.addProperty("INV_NO", rsLocal.getInt("INV_NO"));
-                    object.addProperty("V_DATE", rsLocal.getString("V_DATE"));
-                    object.addProperty("V_TYPE", rsLocal.getInt("V_TYPE"));
-                    object.addProperty("AC_CD", rsLocal.getString("AC_CD"));
-                    object.addProperty("FNAME", rsLocal.getString("FNAME"));
-                    object.addProperty("MOBILE1", rsLocal.getString("MOBILE1"));
-                    object.addProperty("DET_TOT", rsLocal.getDouble("DET_TOT"));
-                    object.addProperty("TAG_NO", rsLocal.getString("TAG_NO"));
-                    object.addProperty("SR_CD", rsLocal.getString("SR_CD"));
-                    object.addProperty("SR_NAME", rsLocal.getString("SR_NAME"));
-                    object.addProperty("IMEI_NO", rsLocal.getString("IMEI_NO"));
-                    object.addProperty("SERAIL_NO", rsLocal.getString("SERAIL_NO"));
-                    object.addProperty("QTY", rsLocal.getString("QTY"));
-                    object.addProperty("RATE", rsLocal.getDouble("RATE"));
-                    object.addProperty("AMT", rsLocal.getDouble("AMT"));
-                    object.addProperty("PUR_TAG_NO", rsLocal.getString("PUR_TAG_NO"));
-                    object.addProperty("REMARK", rsLocal.getString("REMARK"));
-                    object.addProperty("BRANCH_CD", rsLocal.getString("BRANCH_CD"));
+                    object.addProperty("SALE_RATE", viewDataRs.getString("SALE_RATE"));
                     array.add(object);
                 }
-//                response.getWriter().print(array.toString());
+                lb.closeResultSet(viewDataRs);
+                lb.closeStatement(pstLocal);
+                lb.closeConnection(dataConnection);
                 jResultObj.addProperty("result", 1);
                 jResultObj.addProperty("Cause", "success");
                 jResultObj.add("data", array);
@@ -91,6 +67,8 @@ public class GetDCBill extends HttpServlet {
             } catch (SQLException ex) {
                 jResultObj.addProperty("result", -1);
                 jResultObj.addProperty("Cause", ex.getMessage());
+            } finally {
+                lb.closeConnection(dataConnection);
             }
         }
         response.getWriter().print(jResultObj);

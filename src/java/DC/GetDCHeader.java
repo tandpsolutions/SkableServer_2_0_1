@@ -52,8 +52,8 @@ public class GetDCHeader extends HttpServlet {
         if (dataConnection != null) {
             try {
                 String sql = "select l.branch_cd,l.ac_cd,l.REF_NO,l.INV_NO,l.V_TYPE,concat(a.FNAME,' ',a.MNAME,' ',a.LNAME) as ac_name,l.V_DATE,'' as BILL_NO,l1.AMT,"
-                        + "l1.IMEI_NO,l1.SERAIL_NO,s.SR_NAME,l1.remark"
-                        + " from DCHD l left join DCDT l1 on l.REF_NO=l1.REF_NO left join SERIESMST s on l1.SR_CD = s.SR_CD\n"
+                        + "l1.IMEI_NO,l1.SERAIL_NO,l1.SR_NAME,l1.remark"
+                        + " from DCHD l left join DCDT l1 on l.REF_NO=l1.REF_NO \n"
                         + "left join ACNTMST a on l.AC_CD=a.AC_CD where v_date>=? and v_date<=? and v_type=? and is_del=0";
                 if (!branch_cd.equalsIgnoreCase("0")) {
                     sql += " and l.branch_cd=" + branch_cd;

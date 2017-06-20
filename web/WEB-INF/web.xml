@@ -816,6 +816,10 @@
         <servlet-name>purchase</servlet-name>
         <servlet-class>reset.purchase</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetSalesRateByTag</servlet-name>
+        <servlet-class>salesRetrurn.GetSalesRateByTag</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ValidateLogin</servlet-name>
         <url-pattern>/ValidateLogin</url-pattern>
@@ -1627,6 +1631,10 @@
     <servlet-mapping>
         <servlet-name>purchase</servlet-name>
         <url-pattern>/purchase</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetSalesRateByTag</servlet-name>
+        <url-pattern>/GetSalesRateByTag</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

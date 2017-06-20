@@ -145,7 +145,7 @@ public class AddUpdateDCDetail extends HttpServlet {
                     }
                 }
                 for (int i = 0; i < detail.size(); i++) {
-                    sql = "INSERT INTO DCDT (REF_NO,SR_NO,TAG_NO,SR_CD,IMEI_NO,SERAIL_NO,QTY,RATE,AMT,PUR_TAG_NO,remark) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+                    sql = "INSERT INTO DCDT (REF_NO,SR_NO,TAG_NO,SR_CD,IMEI_NO,SERAIL_NO,QTY,RATE,AMT,PUR_TAG_NO,remark,sr_name) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
                     pstLocal = dataConnection.prepareStatement(sql);
                     pstLocal.setString(1, detail.get(0).getRef_no());
                     pstLocal.setInt(2, i + 1);
@@ -158,6 +158,7 @@ public class AddUpdateDCDetail extends HttpServlet {
                     pstLocal.setDouble(9, detail.get(i).getAmt());
                     pstLocal.setString(10, detail.get(i).getPur_tag_no());
                     pstLocal.setString(11, detail.get(i).getRemark());
+                    pstLocal.setString(12, detail.get(i).getSr_name());
                     pstLocal.executeUpdate();
                 }
                 if (detail.get(0).getV_type().equalsIgnoreCase("0")) {
@@ -218,6 +219,7 @@ public class AddUpdateDCDetail extends HttpServlet {
                 return "Z";
         }
     }
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

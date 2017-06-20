@@ -59,6 +59,15 @@ public class SalesBillDetail {
     private String SFID;
     private String pmt_days;
     private String branch_cd;
+    private String sr_name;
+
+    public String getSr_name() {
+        return sr_name;
+    }
+
+    public void setSr_name(String sr_name) {
+        this.sr_name = sr_name;
+    }
 
     public String getPmt_days() {
         return pmt_days;
