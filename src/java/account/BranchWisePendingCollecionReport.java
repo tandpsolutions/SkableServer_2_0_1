@@ -52,7 +52,8 @@ public class BranchWisePendingCollecionReport extends HttpServlet {
             try {
 
                 PreparedStatement pstLocal = null;
-                String sql = "SELECT v.REMARK,v.INV_NO,o.DOC_REF_NO,o.DOC_DATE,o.AC_CD,o.UNPAID_AMT,o.DUE_DATE,v.BRANCH_CD,a.FNAME,v.buy_back_model,v.buy_back_amt,r.ref_name FROM "
+                String sql = "SELECT v.REMARK,v.INV_NO,o.DOC_REF_NO,o.DOC_DATE,o.AC_CD,o.UNPAID_AMT,o.DUE_DATE,v.BRANCH_CD,a.FNAME,v.buy_back_model,v.buy_back_amt,r.ref_name,"
+                        + " o.sr_no FROM "
                         + "oldb2_4 o LEFT JOIN vilshd v ON v.REF_NO=o.DOC_REF_NO LEFT JOIN acntmst a ON a.AC_CD=v.AC_CD left join refmst r on v.ref_cd=r.ref_cd"
                         + " WHERE doc_ref_no LIKE '02%' AND o.UNPAID_AMT >0 and v.is_del=0 and v.v_date>='" + from_date + "' and v.v_date<='" + to_date + "'";
                 if (branch_cd != 0) {
@@ -74,6 +75,7 @@ public class BranchWisePendingCollecionReport extends HttpServlet {
                     object.addProperty("INV_NO", viewDataRs.getString("INV_NO"));
                     object.addProperty("DOC_REF_NO", viewDataRs.getString("DOC_REF_NO"));
                     object.addProperty("AC_CD", viewDataRs.getString("AC_CD"));
+                    object.addProperty("SR_NO", viewDataRs.getString("SR_NO"));
                     object.addProperty("DOC_CD", "");
                     object.addProperty("UNPAID_AMT", viewDataRs.getDouble("UNPAID_AMT"));
                     object.addProperty("DUE_DATE", viewDataRs.getString("DUE_DATE"));
