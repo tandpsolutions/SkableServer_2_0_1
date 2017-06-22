@@ -155,6 +155,15 @@ public class SnapShots extends HttpServlet {
                 } else {
                     jResultObj.addProperty("debtors", "0.00");
                 }
+                sql = "select sum(card_chg) from vilshd v left join  payment p on v.ref_no=p.ref_no  where v.v_date>='" + from_date + "' and "
+                        + " v.v_date<='" + to_date + "' ";
+                pstLocal = dataConnection.prepareStatement(sql);
+                rsLocal = pstLocal.executeQuery();
+                if (rsLocal.next()) {
+                    jResultObj.addProperty("swipe_charge", rsLocal.getDouble(1));
+                } else {
+                    jResultObj.addProperty("swipe_charge", 0.00);
+                }
                 jResultObj.addProperty("result", 1);
             } catch (SQLNonTransientConnectionException ex1) {
                 jResultObj.addProperty("result", -1);

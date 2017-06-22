@@ -1032,14 +1032,14 @@ public class Library {
                 + " pmt.BANK_CD,pmt.CARD_NAME AS CARD_CD,pmt.BAJAJ_NAME AS BAJAJ_CD, pmt.CASH_AMT,bank.FNAME AS OUR_BANK,pmt.BANK_NAME,pmt.BANK_BRANCH ,"
                 + " s1.SR_CD as BUY_BACK_CD,s1.SR_NAME AS BUY_BACK_MODEL,l.BUY_BACK_AMT,l.BUY_BACK_IMEI_NO,l.PART_NO,s2.SR_CD as INS_CD,"
                 + " s2.SR_NAME AS INS_MODEL,l.INS_AMT,l.PMT_DAYS,l.BANK_CHARGES, l.ADVANCE_AMT,l.DISCOUNT,t1.pur_rate,a.ref_by,r.REF_NAME,pmt.BAJAJ_PER"
-                + ",pmt.BAJAJ_CHG,pmt.CARD_PER,pmt.CARD_CHG,sm.SM_NAME,sc.scheme_name,pmt.card_no,pmt.tid_no "
+                + ",pmt.BAJAJ_CHG,pmt.CARD_PER,pmt.CARD_CHG,sm.SM_NAME,sc.scheme_name,pmt.card_no,pmt.tid_no,l.add_sr_no  "
                 + " FROM vilshd l LEFT JOIN vilsdt l1 ON l.REF_NO=l1.REF_NO LEFT JOIN SERIESMST s ON s.SR_CD=l1.SR_CD  LEFT JOIN acntmst a ON l.ac_cd=a.ac_cd "
                 + " LEFT JOIN adbkmst a1 ON a.ac_cd=a1.ac_cd LEFT JOIN phbkmst p ON a.ac_cd=p.ac_cd  LEFT JOIN taxmst t ON l1.tax_cd=t.tax_cd "
                 + " LEFT JOIN tag t1 ON l1.PUR_TAG_NO=t1.REF_NO LEFT JOIN PAYMENT pmt ON l.REF_NO=pmt.REF_NO LEFT JOIN ACNTMST bank ON pmt.BANK_CD=bank.AC_CD "
                 + " LEFT JOIN ACNTMST card ON pmt.CARD_NAME=card.AC_CD LEFT JOIN seriesmst s1 ON l.BUY_BACK_MODEL=s1.SR_CD "
                 + " LEFT JOIN seriesmst s2 ON l.INS_CD=s2.SR_CD left join refmst r on r.ref_cd=l.ref_cd left join smmst sm on sm.sm_cd=l.sm_cd "
                 + " LEFT JOIN ACNTMST bajaj ON pmt.BAJAJ_NAME=bajaj.AC_CD left join schememst sc on l.scheme_cd=sc.scheme_cd"
-                + " WHERE l.REF_NO='" + ref_no + "'";
+                + " WHERE l.REF_NO='" + ref_no + "' and a1.sr_no=l.add_sr_no";
         PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
         ResultSet rsLocal = pstLocal.executeQuery();
         JsonArray array = new JsonArray();
@@ -1117,6 +1117,7 @@ public class Library {
             object.addProperty("INS_MODEL", rsLocal.getString("INS_MODEL"));
             object.addProperty("INS_AMT", rsLocal.getString("INS_AMT"));
             object.addProperty("PMT_DAYS", rsLocal.getString("PMT_DAYS"));
+            object.addProperty("add_sr_no", rsLocal.getString("add_sr_no"));
             object.addProperty("BANK_CHARGES", rsLocal.getString("BANK_CHARGES"));
             object.addProperty("ADVANCE_AMT", rsLocal.getString("ADVANCE_AMT"));
             object.addProperty("PUR_RATE", rsLocal.getString("PUR_RATE"));

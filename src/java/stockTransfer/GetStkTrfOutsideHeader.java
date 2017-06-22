@@ -53,7 +53,7 @@ public class GetStkTrfOutsideHeader extends HttpServlet {
 
         if (dataConnection != null) {
             try {
-                String sql = "SELECT remark,ref_no,inv_no,v_date,from_loc,to_loc,approve_by FROM stktrfouthd s WHERE  v_date>=? AND v_date<=? ";
+                String sql = "SELECT remark,ref_no,inv_no,v_date,from_loc,to_loc,approve_by,s.user_id FROM stktrfouthd s WHERE  v_date>=? AND v_date<=? ";
                 if (!loc.equalsIgnoreCase("0")) {
                     if (v_type.equalsIgnoreCase("0")) {
                         sql += "and from_loc = " + loc;
@@ -79,6 +79,7 @@ public class GetStkTrfOutsideHeader extends HttpServlet {
                     } else {
                         object.addProperty("approve_by", lb.getUserName(rsLocal.getString("approve_by")));
                     }
+                    object.addProperty("user_name", lb.getUserName(rsLocal.getString("user_id")));
                     array.add(object);
                 }
 //                response.getWriter().print(array.toString());
