@@ -46,7 +46,7 @@ public class GetAccountMaster extends HttpServlet {
         Library lb = Library.getInstance();
         if (dataConnection != null) {
             try {
-                String sql = "select a.OPB_AMT,a.OPB_EFF,a.AC_CD,FNAME,g.GROUP_NAME,g.GRP_CD,CST,TIN,a1.ADD1,p.MOBILE1,a.card_no,p.EMAIL,REF_BY from ACNTMST a left join GROUPMST g on a.GRP_CD=g.GRP_CD \n"
+                String sql = "select a.OPB_AMT,a.OPB_EFF,a.AC_CD,FNAME,g.GROUP_NAME,g.GRP_CD,CST,TIN,a1.ADD1,p.MOBILE1,a.card_no,p.EMAIL,REF_BY,gst_no from ACNTMST a left join GROUPMST g on a.GRP_CD=g.GRP_CD \n"
                         + "left join ADBKMST a1 on a.AC_CD=a1.AC_CD left join PHBKMST p on a.AC_CD=p.AC_CD where fname <>''";
                 if (ac_name != null) {
                     sql += " and fname like '%" + ac_name + "%'";
@@ -76,6 +76,7 @@ public class GetAccountMaster extends HttpServlet {
                     object.addProperty("OPB_AMT", rsLocal.getString("OPB_AMT"));
                     object.addProperty("OPB_EFF", rsLocal.getString("OPB_EFF"));
                     object.addProperty("REF_BY", rsLocal.getString("REF_BY"));
+                    object.addProperty("GST_NO", rsLocal.getString("GST_NO"));
                     array.add(object);
                 }
                 jResultObj.addProperty("result", 1);

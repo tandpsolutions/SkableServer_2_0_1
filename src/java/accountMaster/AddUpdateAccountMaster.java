@@ -90,8 +90,8 @@ public class AddUpdateAccountMaster extends HttpServlet {
 
         if (acc.getAC_CD().equalsIgnoreCase("")) {
             String alias = lb.generateKey(dataConnection, "ACNTMST", "ac_alias", "J", 5);
-            String sql = "insert into ACNTMST (AC_CD,fname,mname,lname,grp_cd,contact_prsn,cst,pan,ref_by,user_id,ac_alias,TIN,card_no,OPB_AMT,OPB_EFF) "
-                    + "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "insert into ACNTMST (AC_CD,fname,mname,lname,grp_cd,contact_prsn,cst,pan,ref_by,user_id,ac_alias,TIN,card_no,OPB_AMT,OPB_EFF,gst_no) "
+                    + "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
             acc.setAC_CD(lb.generateKey(dataConnection, "ACNTMST", "AC_CD", "A", 7));
             pstLocal.setString(1, acc.getAC_CD());
@@ -108,6 +108,7 @@ public class AddUpdateAccountMaster extends HttpServlet {
             pstLocal.setString(12, acc.getTIN());
             pstLocal.setString(13, acc.getCARD_NO());
             pstLocal.setDouble(14, acc.getOPB_AMT());
+            pstLocal.setString(16, acc.getGst_no());
             pstLocal.setInt(15, acc.getOPB_EFF());
             pstLocal.execute();
 
@@ -151,7 +152,8 @@ public class AddUpdateAccountMaster extends HttpServlet {
             pstLocal.setDouble(7, acc.getOPB_AMT());
             pstLocal.setInt(8, acc.getOPB_EFF());
             pstLocal.setString(9, acc.getREF_BY());
-            pstLocal.setString(10, acc.getAC_CD());
+            pstLocal.setString(10, acc.getGst_no());
+            pstLocal.setString(11, acc.getAC_CD());
             pstLocal.execute();
 
             for (int i = 0; i < acc.getAddress().size(); i++) {
