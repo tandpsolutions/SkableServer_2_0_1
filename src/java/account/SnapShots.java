@@ -147,7 +147,7 @@ public class SnapShots extends HttpServlet {
                 }
                 sql = sql.substring(0, sql.length() - 1);
                 sql += ") > 1 ";
-                
+
                 pstLocal = dataConnection.prepareStatement(sql);
                 rsLocal = pstLocal.executeQuery();
                 if (rsLocal.next()) {
@@ -164,6 +164,17 @@ public class SnapShots extends HttpServlet {
                 } else {
                     jResultObj.addProperty("swipe_charge", 0.00);
                 }
+
+                sql = "select sum(fr_chg) from lbrphd v where v.v_date>='" + from_date + "' and "
+                        + " v.v_date<='" + to_date + "' ";
+                pstLocal = dataConnection.prepareStatement(sql);
+                rsLocal = pstLocal.executeQuery();
+                if (rsLocal.next()) {
+                    jResultObj.addProperty("fr_chg", rsLocal.getDouble(1));
+                } else {
+                    jResultObj.addProperty("fr_chg", 0.00);
+                }
+
                 jResultObj.addProperty("result", 1);
             } catch (SQLNonTransientConnectionException ex1) {
                 jResultObj.addProperty("result", -1);

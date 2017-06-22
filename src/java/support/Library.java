@@ -1032,7 +1032,7 @@ public class Library {
                 + " pmt.BANK_CD,pmt.CARD_NAME AS CARD_CD,pmt.BAJAJ_NAME AS BAJAJ_CD, pmt.CASH_AMT,bank.FNAME AS OUR_BANK,pmt.BANK_NAME,pmt.BANK_BRANCH ,"
                 + " s1.SR_CD as BUY_BACK_CD,s1.SR_NAME AS BUY_BACK_MODEL,l.BUY_BACK_AMT,l.BUY_BACK_IMEI_NO,l.PART_NO,s2.SR_CD as INS_CD,"
                 + " s2.SR_NAME AS INS_MODEL,l.INS_AMT,l.PMT_DAYS,l.BANK_CHARGES, l.ADVANCE_AMT,l.DISCOUNT,t1.pur_rate,a.ref_by,r.REF_NAME,pmt.BAJAJ_PER"
-                + ",pmt.BAJAJ_CHG,pmt.CARD_PER,pmt.CARD_CHG,sm.SM_NAME,sc.scheme_name,pmt.card_no,pmt.tid_no,l.add_sr_no  "
+                + ",pmt.BAJAJ_CHG,pmt.CARD_PER,pmt.CARD_CHG,sm.SM_NAME,sc.scheme_name,pmt.card_no,pmt.tid_no,l.add_sr_no "
                 + " FROM vilshd l LEFT JOIN vilsdt l1 ON l.REF_NO=l1.REF_NO LEFT JOIN SERIESMST s ON s.SR_CD=l1.SR_CD  LEFT JOIN acntmst a ON l.ac_cd=a.ac_cd "
                 + " LEFT JOIN adbkmst a1 ON a.ac_cd=a1.ac_cd LEFT JOIN phbkmst p ON a.ac_cd=p.ac_cd  LEFT JOIN taxmst t ON l1.tax_cd=t.tax_cd "
                 + " LEFT JOIN tag t1 ON l1.PUR_TAG_NO=t1.REF_NO LEFT JOIN PAYMENT pmt ON l.REF_NO=pmt.REF_NO LEFT JOIN ACNTMST bank ON pmt.BANK_CD=bank.AC_CD "
@@ -1140,13 +1140,14 @@ public class Library {
                 + " pmt.BANK_CD,pmt.CARD_NAME AS CARD_CD,pmt.BAJAJ_NAME AS BAJAJ_CD, pmt.CASH_AMT,bank.FNAME AS OUR_BANK,pmt.BANK_NAME,pmt.BANK_BRANCH ,"
                 + " s1.SR_CD as BUY_BACK_CD,s1.SR_NAME AS BUY_BACK_MODEL,l.BUY_BACK_AMT,l.BUY_BACK_IMEI_NO,l.PART_NO,s2.SR_CD as INS_CD,"
                 + " s2.SR_NAME AS INS_MODEL,l.INS_AMT,l.PMT_DAYS,l.BANK_CHARGES, l.ADVANCE_AMT,l.DISCOUNT,t1.pur_rate,a.ref_by,r.REF_NAME,pmt.BAJAJ_PER"
-                + ",pmt.BAJAJ_CHG,pmt.CARD_PER,pmt.CARD_CHG,sm.SM_NAME,pmt.card_no,pmt.tid_no "
-                + " FROM vilshdlg l LEFT JOIN vilsdtlg l1 ON l.REF_NO=l1.REF_NO LEFT JOIN SERIESMST s ON s.SR_CD=l1.SR_CD  LEFT JOIN acntmst a ON l.ac_cd=a.ac_cd "
+                + ",pmt.BAJAJ_CHG,pmt.CARD_PER,pmt.CARD_CHG,sm.SM_NAME,sc.scheme_name,pmt.card_no,pmt.tid_no,l.add_sr_no "
+                + " FROM vilshd l LEFT JOIN vilsdt l1 ON l.REF_NO=l1.REF_NO LEFT JOIN SERIESMST s ON s.SR_CD=l1.SR_CD  LEFT JOIN acntmst a ON l.ac_cd=a.ac_cd "
                 + " LEFT JOIN adbkmst a1 ON a.ac_cd=a1.ac_cd LEFT JOIN phbkmst p ON a.ac_cd=p.ac_cd  LEFT JOIN taxmst t ON l1.tax_cd=t.tax_cd "
                 + " LEFT JOIN tag t1 ON l1.PUR_TAG_NO=t1.REF_NO LEFT JOIN PAYMENT pmt ON l.REF_NO=pmt.REF_NO LEFT JOIN ACNTMST bank ON pmt.BANK_CD=bank.AC_CD "
                 + " LEFT JOIN ACNTMST card ON pmt.CARD_NAME=card.AC_CD LEFT JOIN seriesmst s1 ON l.BUY_BACK_MODEL=s1.SR_CD "
                 + " LEFT JOIN seriesmst s2 ON l.INS_CD=s2.SR_CD left join refmst r on r.ref_cd=l.ref_cd left join smmst sm on sm.sm_cd=l.sm_cd "
-                + " LEFT JOIN ACNTMST bajaj ON pmt.BAJAJ_NAME=bajaj.AC_CD WHERE l.REF_NO='" + ref_no + "'";
+                + " LEFT JOIN ACNTMST bajaj ON pmt.BAJAJ_NAME=bajaj.AC_CD left join schememst sc on l.scheme_cd=sc.scheme_cd"
+                + " WHERE l.REF_NO='" + ref_no + "' and a1.sr_no=l.add_sr_no";
         PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
         ResultSet rsLocal = pstLocal.executeQuery();
         JsonArray array = new JsonArray();
@@ -1203,8 +1204,6 @@ public class Library {
             object.addProperty("CARD_CHG", rsLocal.getString("CARD_CHG"));
             object.addProperty("BANK_CD", rsLocal.getString("BANK_CD"));
             object.addProperty("CARD_CD", rsLocal.getString("CARD_CD"));
-            object.addProperty("CARD_NO", rsLocal.getString("CARD_NO"));
-            object.addProperty("TID_NO", rsLocal.getString("TID_NO"));
             object.addProperty("BAJAJ_CD", rsLocal.getString("BAJAJ_CD"));
             object.addProperty("SFID", rsLocal.getString("SFID"));
             object.addProperty("AMT", rsLocal.getString("AMT"));
@@ -1216,6 +1215,8 @@ public class Library {
             object.addProperty("MRP", rsLocal.getString("MRP"));
             object.addProperty("IS_MAIN", rsLocal.getInt("IS_MAIN"));
             object.addProperty("BUY_BACK_CD", rsLocal.getString("BUY_BACK_CD"));
+            object.addProperty("CARD_NO", rsLocal.getString("CARD_NO"));
+            object.addProperty("TID_NO", rsLocal.getString("TID_NO"));
             object.addProperty("BUY_BACK_MODEL", rsLocal.getString("BUY_BACK_MODEL"));
             object.addProperty("BUY_BACK_AMT", rsLocal.getString("BUY_BACK_AMT"));
             object.addProperty("BUY_BACK_IMEI_NO", rsLocal.getString("BUY_BACK_IMEI_NO"));
@@ -1224,11 +1225,13 @@ public class Library {
             object.addProperty("INS_MODEL", rsLocal.getString("INS_MODEL"));
             object.addProperty("INS_AMT", rsLocal.getString("INS_AMT"));
             object.addProperty("PMT_DAYS", rsLocal.getString("PMT_DAYS"));
+            object.addProperty("add_sr_no", rsLocal.getString("add_sr_no"));
             object.addProperty("BANK_CHARGES", rsLocal.getString("BANK_CHARGES"));
             object.addProperty("ADVANCE_AMT", rsLocal.getString("ADVANCE_AMT"));
             object.addProperty("PUR_RATE", rsLocal.getString("PUR_RATE"));
             object.addProperty("REF_NAME", (rsLocal.getString("REF_NAME") == null) ? "" : rsLocal.getString("REF_NAME"));
             object.addProperty("SM_NAME", (rsLocal.getString("SM_NAME") == null) ? "" : rsLocal.getString("SM_NAME"));
+            object.addProperty("SCHEME_NAME", (rsLocal.getString("SCHEME_NAME") == null) ? "" : rsLocal.getString("SCHEME_NAME"));
             array.add(object);
         }
         closeResultSet(rsLocal);
