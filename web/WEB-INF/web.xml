@@ -820,6 +820,14 @@
         <servlet-name>GetSalesRateByTag</servlet-name>
         <servlet-class>salesRetrurn.GetSalesRateByTag</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetCreditLimit</servlet-name>
+        <servlet-class>support.GetCreditLimit</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateBranchMaster</servlet-name>
+        <servlet-class>support.UpdateBranchMaster</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ValidateLogin</servlet-name>
         <url-pattern>/ValidateLogin</url-pattern>
@@ -1635,6 +1643,14 @@
     <servlet-mapping>
         <servlet-name>GetSalesRateByTag</servlet-name>
         <url-pattern>/GetSalesRateByTag</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetCreditLimit</servlet-name>
+        <url-pattern>/GetCreditLimit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateBranchMaster</servlet-name>
+        <url-pattern>/UpdateBranchMaster</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

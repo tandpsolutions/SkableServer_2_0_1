@@ -1,32 +1,34 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package support;
 
-import com.google.gson.JsonArray;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.BranchMasterModel;
 
 /**
  *
- * @author bhaumik
+ * @author bhaumikshah
  */
-public class GetBranchMaster extends HttpServlet {
+public class UpdateBranchMaster extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Processes requests for both HTTP
+     * <code>GET</code> and
+     * <code>POST</code> methods.
      *
      * @param request servlet request
      * @param response servlet response
@@ -37,59 +39,43 @@ public class GetBranchMaster extends HttpServlet {
             throws ServletException, IOException {
         final DBHelper helper = DBHelper.GetDBHelper();
         final Connection dataConnection = helper.getMainConnection();
+        final String detailJson = request.getParameter("branch");
+        TypeToken<List<BranchMasterModel>> token = new TypeToken<List<BranchMasterModel>>() {
+        };
+        List<BranchMasterModel> detail = new Gson().fromJson(detailJson, token.getType());
         final JsonObject jResultObj = new JsonObject();
-        Library lb = Library.getInstance();
+
         if (dataConnection != null) {
             try {
-                String sql = "select branch_cd,branch_name,sh_name,address1,address2,address3,email,phone,ins_amt from branchmst order by branch_cd";
-                PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
-                ResultSet rsLocal = pstLocal.executeQuery();
-                JsonArray array = new JsonArray();
-                while (rsLocal.next()) {
-                    JsonObject object = new JsonObject();
-                    object.addProperty("branch_cd", rsLocal.getString("branch_cd"));
-                    object.addProperty("branch_name", rsLocal.getString("branch_name"));
-                    object.addProperty("sh_name", rsLocal.getString("sh_name"));
-                    object.addProperty("address1", rsLocal.getString("address1"));
-                    object.addProperty("address2", rsLocal.getString("address2"));
-                    object.addProperty("address3", rsLocal.getString("address3"));
-                    object.addProperty("email", rsLocal.getString("email"));
-                    object.addProperty("phone", rsLocal.getString("phone"));
-                    object.addProperty("credit_limit", rsLocal.getString("ins_amt"));
-                    array.add(object);
-                }
+                String sql = "";
+                sql = "UPDATE branchmst SET ins_amt=? where branch_cd=?";
 
-                sql = "select * from dbmst order by db_year desc";
-                pstLocal = dataConnection.prepareStatement(sql);
-                rsLocal = pstLocal.executeQuery();
-                JsonArray year_array = new JsonArray();
-                while (rsLocal.next()) {
-                    JsonObject object = new JsonObject();
-                    object.addProperty("db_year", rsLocal.getString("db_year"));
-                    year_array.add(object);
+                PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
+
+                if (!detail.isEmpty()) {
+                    for (int i = 0; i < detail.size(); i++) {
+                        pstLocal.setString(1, detail.get(i).getCredit_limit());
+                        pstLocal.setString(2, detail.get(i).getBranch_cd());
+                        pstLocal.executeUpdate();
+                    }
                 }
-                lb.closeResultSet(rsLocal);
-                lb.closeStatement(pstLocal);
                 jResultObj.addProperty("result", 1);
                 jResultObj.addProperty("Cause", "success");
-                jResultObj.add("data", array);
-                jResultObj.add("year", year_array);
             } catch (SQLNonTransientConnectionException ex1) {
                 jResultObj.addProperty("result", -1);
                 jResultObj.addProperty("Cause", "Server is down");
             } catch (SQLException ex) {
                 jResultObj.addProperty("result", -1);
                 jResultObj.addProperty("Cause", ex.getMessage());
-            } finally {
-                lb.closeConnection(dataConnection);
             }
         }
         response.getWriter().print(jResultObj);
     }
 
-// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
-     * Handles the HTTP <code>GET</code> method.
+     * Handles the HTTP
+     * <code>GET</code> method.
      *
      * @param request servlet request
      * @param response servlet response
@@ -103,7 +89,8 @@ public class GetBranchMaster extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
+     * Handles the HTTP
+     * <code>POST</code> method.
      *
      * @param request servlet request
      * @param response servlet response
@@ -125,5 +112,4 @@ public class GetBranchMaster extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }
