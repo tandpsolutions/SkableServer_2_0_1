@@ -51,7 +51,7 @@ public class GetIntransitStockReport extends HttpServlet {
 
         if (dataConnection != null) {
             try {
-                String sql = "SELECT ref_no,inv_no,v_date,from_loc,to_loc,approve_by FROM stktrfouthd s WHERE  v_date>=? AND v_date<=? "
+                String sql = "SELECT ref_no,inv_no,v_date,from_loc,to_loc,approve_by,s.user_id FROM stktrfouthd s WHERE  v_date>=? AND v_date<=? "
                         + "and approve_by is null";
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
                 pstLocal.setString(1, from_date);
@@ -70,6 +70,7 @@ public class GetIntransitStockReport extends HttpServlet {
                     } else {
                         object.addProperty("approve_by", lb.getUserName(rsLocal.getString("approve_by")));
                     }
+                    object.addProperty("user_name", lb.getUserName(rsLocal.getString("user_id")));
                     array.add(object);
                 }
 //                response.getWriter().print(array.toString());

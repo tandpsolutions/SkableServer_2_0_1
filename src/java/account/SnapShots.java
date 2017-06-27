@@ -174,6 +174,16 @@ public class SnapShots extends HttpServlet {
                 } else {
                     jResultObj.addProperty("fr_chg", 0.00);
                 }
+                
+                
+                sql = "select ins_amt from branchmst ";
+                pstLocal = DBHelper.GetDBHelper().getMainConnection().prepareStatement(sql);
+                rsLocal = pstLocal.executeQuery();
+                if (rsLocal.next()) {
+                    jResultObj.addProperty("ins_amt", rsLocal.getDouble(1));
+                } else {
+                    jResultObj.addProperty("ins_amt", 0.00);
+                }
 
                 jResultObj.addProperty("result", 1);
             } catch (SQLNonTransientConnectionException ex1) {
