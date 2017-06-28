@@ -828,6 +828,10 @@
         <servlet-name>UpdateBranchMaster</servlet-name>
         <servlet-class>support.UpdateBranchMaster</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetTaxMasterView</servlet-name>
+        <servlet-class>taxmaster.GetTaxMasterView</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ValidateLogin</servlet-name>
         <url-pattern>/ValidateLogin</url-pattern>
@@ -1651,6 +1655,10 @@
     <servlet-mapping>
         <servlet-name>UpdateBranchMaster</servlet-name>
         <url-pattern>/UpdateBranchMaster</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetTaxMasterView</servlet-name>
+        <url-pattern>/GetTaxMasterView</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
