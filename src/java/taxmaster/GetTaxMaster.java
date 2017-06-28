@@ -1,6 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package taxmaster;
@@ -23,13 +22,14 @@ import support.Library;
 
 /**
  *
- * @author indianic
+ * @author bhaumikshah
  */
-public class GetTaxMasterView extends HttpServlet {
+public class GetTaxMaster extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Processes requests for both HTTP
+     * <code>GET</code> and
+     * <code>POST</code> methods.
      *
      * @param request servlet request
      * @param response servlet response
@@ -38,13 +38,14 @@ public class GetTaxMasterView extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String tax_cd = request.getParameter("tax_cd");
         final DBHelper helper = DBHelper.GetDBHelper();
         final Connection dataConnection = helper.getConnMpAdmin();
         final JsonObject jResultObj = new JsonObject();
         Library lb = Library.getInstance();
         if (dataConnection != null) {
             try {
-                String sql = "select TAX_CD,TAX_NAME,TAX_PER,ADD_TAX_PER,TAX_ON_SALES,EDIT_NO,USER_ID,TIME_STAMP,TAX_AC_CD,ADD_TAX_AC_CD,TAX_PER+ADD_TAX_PER as IGST from taxmst";
+                String sql = "select TAX_CD,TAX_NAME,TAX_PER,ADD_TAX_PER,TAX_ON_SALES,EDIT_NO,USER_ID,TIME_STAMP,TAX_AC_CD,ADD_TAX_AC_CD,TAX_PER+ADD_TAX_PER as IGST from taxmst where tax_cd='" + tax_cd + "'";
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
                 ResultSet rsLocal = pstLocal.executeQuery();
                 JsonArray array = new JsonArray();
@@ -81,7 +82,8 @@ public class GetTaxMasterView extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
-     * Handles the HTTP <code>GET</code> method.
+     * Handles the HTTP
+     * <code>GET</code> method.
      *
      * @param request servlet request
      * @param response servlet response
@@ -95,7 +97,8 @@ public class GetTaxMasterView extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
+     * Handles the HTTP
+     * <code>POST</code> method.
      *
      * @param request servlet request
      * @param response servlet response
@@ -117,5 +120,4 @@ public class GetTaxMasterView extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }

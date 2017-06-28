@@ -832,6 +832,14 @@
         <servlet-name>GetTaxMasterView</servlet-name>
         <servlet-class>taxmaster.GetTaxMasterView</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AddUpdateTaxMaster</servlet-name>
+        <servlet-class>taxmaster.AddUpdateTaxMaster</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetTaxMaster</servlet-name>
+        <servlet-class>taxmaster.GetTaxMaster</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ValidateLogin</servlet-name>
         <url-pattern>/ValidateLogin</url-pattern>
@@ -1659,6 +1667,14 @@
     <servlet-mapping>
         <servlet-name>GetTaxMasterView</servlet-name>
         <url-pattern>/GetTaxMasterView</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddUpdateTaxMaster</servlet-name>
+        <url-pattern>/AddUpdateTaxMaster</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetTaxMaster</servlet-name>
+        <url-pattern>/GetTaxMaster</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
