@@ -46,7 +46,7 @@ public class GetModel extends HttpServlet {
         if (dataConnection != null) {
             try {
                 String sql = "select MODEL_CD,MODEL_NAME,m.BRAND_CD,BRAND_NAME,m.TAX_CD,TAX_NAME,m.TYPE_CD,t1.TYPE_NAME,t2.type_name as SUB_TYPE_NAME"
-                        + ",m.sub_type_cd from MODELMST m left join "
+                        + ",m.sub_type_cd,hsn_code from MODELMST m left join "
                         + " BRANDMST b on m.BRAND_CD=b.BRAND_CD left join TAXMST t on m.TAX_CD=t.TAX_CD left join TYPEMST t1 on m.TYPE_CD=t1.TYPE_CD"
                         + " left join TYPEMST t2 on m.SUB_TYPE_CD=t2.TYPE_CD where model_cd='" + model_cd + "'";
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
@@ -64,6 +64,7 @@ public class GetModel extends HttpServlet {
                     object.addProperty("TYPE_CD", rsLocal.getString("TYPE_CD"));
                     object.addProperty("SUB_TYPE_NAME", rsLocal.getString("SUB_TYPE_NAME"));
                     object.addProperty("SUB_TYPE_CD", rsLocal.getString("SUB_TYPE_CD"));
+                    object.addProperty("HSN_CODE", rsLocal.getString("HSN_CODE"));
                     array.add(object);
                 }
                 jResultObj.addProperty("result", 1);
