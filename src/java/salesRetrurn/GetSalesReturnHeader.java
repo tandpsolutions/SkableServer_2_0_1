@@ -53,7 +53,7 @@ public class GetSalesReturnHeader extends HttpServlet {
         if (dataConnection != null) {
             try {
                 String sql = "select l.ac_cd,l.REF_NO,l.INV_NO,l.V_TYPE,concat(a.FNAME,' ',a.MNAME,' ',a.LNAME) as ac_name,l.V_DATE,l.NET_AMT,"
-                        + " CASH_AMT,BANK_AMT,CARD_AMT,BAJAJ_AMT,SFID,REMARK "
+                        + " CASH_AMT,BANK_AMT,CARD_AMT,BAJAJ_AMT,SFID,REMARK,l.branch_cd "
                         + " from SRHD l left join ACNTMST a on l.AC_CD=a.AC_CD left join payment p on l.ref_no=p.ref_no where v_date>=? and v_date<=? "
                         + "and v_type=? and is_del=0 order by INV_NO,v_date";
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
@@ -76,6 +76,7 @@ public class GetSalesReturnHeader extends HttpServlet {
                     object.addProperty("BAJAJ_AMT", rsLocal.getDouble("BAJAJ_AMT"));
                     object.addProperty("SFID", rsLocal.getString("SFID"));
                     object.addProperty("AC_CD", rsLocal.getString("AC_CD"));
+                    object.addProperty("BRANCH_CD", rsLocal.getString("BRANCH_CD"));
                     array.add(object);
                 }
 //                response.getWriter().print(array.toString());
