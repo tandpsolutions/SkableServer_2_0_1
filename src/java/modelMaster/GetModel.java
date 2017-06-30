@@ -45,9 +45,12 @@ public class GetModel extends HttpServlet {
         Library lb = Library.getInstance();
         if (dataConnection != null) {
             try {
-                String sql = "select MODEL_CD,MODEL_NAME,m.BRAND_CD,BRAND_NAME,m.TAX_CD,TAX_NAME,m.TYPE_CD,t1.TYPE_NAME,t2.type_name as SUB_TYPE_NAME"
-                        + ",m.sub_type_cd,hsn_code from MODELMST m left join "
-                        + " BRANDMST b on m.BRAND_CD=b.BRAND_CD left join TAXMST t on m.TAX_CD=t.TAX_CD left join TYPEMST t1 on m.TYPE_CD=t1.TYPE_CD"
+                String sql = "select MODEL_CD,MODEL_NAME,m.BRAND_CD,BRAND_NAME,m.TAX_CD,t.TAX_NAME,m.TYPE_CD,t1.TYPE_NAME,t2.type_name as SUB_TYPE_NAME"
+                        + ",m.sub_type_cd,hsn_code,t3.tax_name as GST_NAME,GST_CD from MODELMST m left join "
+                        + " BRANDMST b on m.BRAND_CD=b.BRAND_CD"
+                        + " left join TAXMST t on m.TAX_CD=t.TAX_CD "
+                        + " left join TAXMST t3 on m.GST_CD=t3.TAX_CD "
+                        + " left join TYPEMST t1 on m.TYPE_CD=t1.TYPE_CD"
                         + " left join TYPEMST t2 on m.SUB_TYPE_CD=t2.TYPE_CD where model_cd='" + model_cd + "'";
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
                 ResultSet rsLocal = pstLocal.executeQuery();
@@ -65,6 +68,8 @@ public class GetModel extends HttpServlet {
                     object.addProperty("SUB_TYPE_NAME", rsLocal.getString("SUB_TYPE_NAME"));
                     object.addProperty("SUB_TYPE_CD", rsLocal.getString("SUB_TYPE_CD"));
                     object.addProperty("HSN_CODE", rsLocal.getString("HSN_CODE"));
+                    object.addProperty("GST_CD", rsLocal.getString("GST_CD"));
+                    object.addProperty("GST_NAME", rsLocal.getString("GST_NAME") == null ? "" : rsLocal.getString("GST_NAME"));
                     array.add(object);
                 }
                 jResultObj.addProperty("result", 1);

@@ -45,9 +45,12 @@ public class GetModelMaster extends HttpServlet {
         Library lb = Library.getInstance();
         if (dataConnection != null) {
             try {
-                String sql = "select MODEL_CD,MODEL_NAME,BRAND_NAME,TAX_NAME,t1.TYPE_NAME,t2.type_name as SUB_TYPE_NAME,hsn_code from MODELMST m left join "
-                        + "BRANDMST b on m.BRAND_CD=b.BRAND_CD left join TAXMST t on m.TAX_CD=t.TAX_CD "
-                        + " left join TYPEMST t1 on m.TYPE_CD=t1.TYPE_CD left join TYPEMST t2 on m.SUB_TYPE_CD=t2.TYPE_CD";
+                String sql = "select MODEL_CD,MODEL_NAME,BRAND_NAME,t.TAX_NAME,t1.TYPE_NAME,t2.type_name as SUB_TYPE_NAME,hsn_code,gst_cd,t3.tax_name as GST_NAME from MODELMST m left join "
+                        + "BRANDMST b on m.BRAND_CD=b.BRAND_CD"
+                        + " left join TAXMST t on m.TAX_CD=t.TAX_CD "
+                        + " left join TAXMST t3 on m.gst_cd=t3.TAX_CD "
+                        + " left join TYPEMST t1 on m.TYPE_CD=t1.TYPE_CD "
+                        + "left join TYPEMST t2 on m.SUB_TYPE_CD=t2.TYPE_CD";
                 if (model_name != null) {
                     sql += " where model_name like '%" + model_name + "%'";
                 }
@@ -64,6 +67,7 @@ public class GetModelMaster extends HttpServlet {
                     object.addProperty("TYPE_NAME", rsLocal.getString("TYPE_NAME"));
                     object.addProperty("SUB_TYPE_NAME", rsLocal.getString("SUB_TYPE_NAME"));
                     object.addProperty("HSN_CODE", rsLocal.getString("HSN_CODE"));
+                    object.addProperty("GST_CD", rsLocal.getString("GST_NAME"));
                     array.add(object);
                 }
                 jResultObj.addProperty("result", 1);
