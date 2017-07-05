@@ -48,7 +48,7 @@ public class GetSalesReturnPrint extends HttpServlet {
                 PreparedStatement pstLocal = null;
                 String sql = "SELECT v1.tag_no,v.ADVANCE_AMT,v.INV_NO,a.FNAME,a1.ADD1,p.MOBILE1,a.TIN,v.V_DATE,s.SR_NAME"
                         + ",v1.IMEI_NO,v1.SERAIL_NO,v1.QTY,v1.RATE,v1.DISC_RATE,v1.AMT,p1.CASH_AMT"
-                        + ",p1.CARD_AMT,p1.BANK_AMT,p1.BAJAJ_AMT,v.DET_TOT,v.TAX_AMT,v.ADD_TAX_AMT,v.NET_AMT,v.V_TYPE,p1.CHEQUE_NO,p.EMAIL"
+                        + ",p1.CARD_AMT,p1.BANK_AMT,p1.BAJAJ_AMT,v.DET_TOT,v.TAX_AMT,v.ADD_TAX_AMT,v.NET_AMT,v.V_TYPE,p1.CHEQUE_NO,p.EMAIL,GST_NO"
                         + " FROM SRHD v LEFT JOIN SRDT v1 ON v.REF_NO=v1.REF_NO LEFT JOIN seriesmst s ON v1.SR_CD=s.SR_CD "
                         + "LEFT JOIN acntmst a ON v.AC_CD=a.AC_CD LEFT JOIN adbkmst a1 ON a.AC_CD=a1.AC_CD LEFT JOIN phbkmst p ON p.AC_CD=a.AC_CD "
                         + "LEFT JOIN payment p1 ON v.REF_NO=p1.REF_NO  where v.REF_NO='" + ref_no + "'";
@@ -64,7 +64,9 @@ public class GetSalesReturnPrint extends HttpServlet {
                     object.addProperty("MOBILE1", viewDataRs.getString("MOBILE1"));
                     object.addProperty("EMAIL", viewDataRs.getString("EMAIL"));
                     object.addProperty("TIN", viewDataRs.getString("TIN"));
+                    object.addProperty("GST_NO", viewDataRs.getString("GST_NO"));
                     object.addProperty("V_DATE", viewDataRs.getString("V_DATE"));
+                    object.addProperty("HSN_CODE", "");
                     object.addProperty("SR_NAME", viewDataRs.getString("SR_NAME"));
                     object.addProperty("TAG_NO", viewDataRs.getString("TAG_NO"));
                     object.addProperty("IMEI_NO", viewDataRs.getString("IMEI_NO"));
@@ -91,6 +93,8 @@ public class GetSalesReturnPrint extends HttpServlet {
                     object.addProperty("COMP_ADDRESS3", lb.companySetUp().getAddress_3());
                     object.addProperty("COMP_EMAIL", lb.companySetUp().getEmail());
                     object.addProperty("COMP_MOBILE", lb.companySetUp().getPhone_no());
+                    object.addProperty("COMPANY_GST_NO", "");
+                    object.addProperty("TAX_TYPE", "0");
                     array.add(object);
                 }
                 lb.closeResultSet(viewDataRs);
