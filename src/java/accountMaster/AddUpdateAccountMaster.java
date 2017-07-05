@@ -108,7 +108,7 @@ public class AddUpdateAccountMaster extends HttpServlet {
             pstLocal.setString(12, acc.getTIN());
             pstLocal.setString(13, acc.getCARD_NO());
             pstLocal.setDouble(14, acc.getOPB_AMT());
-            pstLocal.setString(16, acc.getGst_no());
+            pstLocal.setString(16, acc.getGST_NO());
             pstLocal.setInt(15, acc.getOPB_EFF());
             pstLocal.execute();
 
@@ -152,7 +152,7 @@ public class AddUpdateAccountMaster extends HttpServlet {
             pstLocal.setDouble(7, acc.getOPB_AMT());
             pstLocal.setInt(8, acc.getOPB_EFF());
             pstLocal.setString(9, acc.getREF_BY());
-            pstLocal.setString(10, acc.getGst_no());
+            pstLocal.setString(10, acc.getGST_NO());
             pstLocal.setString(11, acc.getAC_CD());
             pstLocal.execute();
 

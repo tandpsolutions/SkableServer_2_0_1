@@ -931,6 +931,7 @@ public class Library {
             JsonObject object = new JsonObject();
             object.addProperty("REF_NO", rsLocal.getString("REF_NO"));
             object.addProperty("INV_NO", rsLocal.getInt("INV_NO"));
+            object.addProperty("TAX_TYPE",0);
             object.addProperty("V_DATE", rsLocal.getString("V_DATE"));
             object.addProperty("DUE_DATE", rsLocal.getString("DUE_DATE"));
             object.addProperty("V_TYPE", rsLocal.getInt("V_TYPE"));
