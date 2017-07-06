@@ -844,6 +844,14 @@
         <servlet-name>GetAccountMasterCode</servlet-name>
         <servlet-class>accountMaster.GetAccountMasterCode</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetRamMaster</servlet-name>
+        <servlet-class>rammaster.GetRamMaster</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddUpdateRamMaster</servlet-name>
+        <servlet-class>rammaster.AddUpdateRamMaster</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ValidateLogin</servlet-name>
         <url-pattern>/ValidateLogin</url-pattern>
@@ -1683,6 +1691,14 @@
     <servlet-mapping>
         <servlet-name>GetAccountMasterCode</servlet-name>
         <url-pattern>/GetAccountMasterCode</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetRamMaster</servlet-name>
+        <url-pattern>/GetRamMaster</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddUpdateRamMaster</servlet-name>
+        <url-pattern>/AddUpdateRamMaster</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
