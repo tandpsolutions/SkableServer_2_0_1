@@ -3,13 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package rammaster;
+package cameramaster;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
 import javax.servlet.ServletException;
@@ -23,7 +25,7 @@ import support.Library;
  *
  * @author indianic
  */
-public class AddUpdateRamMaster extends HttpServlet {
+public class GetCameraMaster extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,40 +40,31 @@ public class AddUpdateRamMaster extends HttpServlet {
             throws ServletException, IOException {
         final DBHelper helper = DBHelper.GetDBHelper();
         final Connection dataConnection = helper.getConnMpAdmin();
-        final Library lb = Library.getInstance();
-        String ram_cd = request.getParameter("ram_cd");
-        final String ram_name = request.getParameter("ram_name");
-        final String user_id = request.getParameter("user_id");
         final JsonObject jResultObj = new JsonObject();
-
+        Library lb = Library.getInstance();
         if (dataConnection != null) {
             try {
-                if (ram_cd.equalsIgnoreCase("")) {
-                    ram_cd = lb.generateKey(dataConnection, "RAMMST", "ram_cd", "R", 7);
-                    String sql = "insert into RAMMST (ram_cd,ram_name,user_id) values(?,?,?)";
-                    PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
-                    pstLocal.setString(1, ram_cd);
-                    pstLocal.setString(2, ram_name);
-                    pstLocal.setString(3, user_id);
-                    pstLocal.executeUpdate();
-                } else if (!ram_cd.equalsIgnoreCase("")) {
-                    String sql = "update RAMMST set ram_name=?,edit_no=edit_no+1,user_id=?,time_stamp=current_timestamp where ram_cd=?";
-                    PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
-                    pstLocal.setString(1, ram_name);
-                    pstLocal.setString(2, user_id);
-                    pstLocal.setString(3, ram_cd);
-                    pstLocal.executeUpdate();
+                String sql = "select CAMERA_CD,CAMERA_NAME,USER_ID from CAMERAMST order by CAMERA_NAME";
+                PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
+                ResultSet rsLocal = pstLocal.executeQuery();
+                JsonArray array = new JsonArray();
+                while (rsLocal.next()) {
+                    JsonObject object = new JsonObject();
+                    object.addProperty("CAMERA_CD", rsLocal.getString("CAMERA_CD"));
+                    object.addProperty("CAMERA_NAME", rsLocal.getString("CAMERA_NAME"));
+                    object.addProperty("USER_ID", rsLocal.getInt("USER_ID"));
+                    array.add(object);
                 }
                 jResultObj.addProperty("result", 1);
                 jResultObj.addProperty("Cause", "success");
-                jResultObj.addProperty("ram_cd", ram_cd);
+                jResultObj.add("data", array);
             } catch (SQLNonTransientConnectionException ex1) {
                 jResultObj.addProperty("result", -1);
                 jResultObj.addProperty("Cause", "Server is down");
             } catch (SQLException ex) {
                 jResultObj.addProperty("result", -1);
                 jResultObj.addProperty("Cause", ex.getMessage());
-            } finally {
+            } finally{
                 lb.closeConnection(dataConnection);
             }
         }

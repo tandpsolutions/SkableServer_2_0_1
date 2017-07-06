@@ -852,6 +852,14 @@
         <servlet-name>AddUpdateRamMaster</servlet-name>
         <servlet-class>rammaster.AddUpdateRamMaster</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetCameraMaster</servlet-name>
+        <servlet-class>cameramaster.GetCameraMaster</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddUpdateCameraMaster</servlet-name>
+        <servlet-class>cameramaster.AddUpdateCameraMaster</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ValidateLogin</servlet-name>
         <url-pattern>/ValidateLogin</url-pattern>
@@ -1699,6 +1707,14 @@
     <servlet-mapping>
         <servlet-name>AddUpdateRamMaster</servlet-name>
         <url-pattern>/AddUpdateRamMaster</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetCameraMaster</servlet-name>
+        <url-pattern>/GetCameraMaster</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddUpdateCameraMaster</servlet-name>
+        <url-pattern>/AddUpdateCameraMaster</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
