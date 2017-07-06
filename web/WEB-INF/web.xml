@@ -860,6 +860,14 @@
         <servlet-name>AddUpdateCameraMaster</servlet-name>
         <servlet-class>cameramaster.AddUpdateCameraMaster</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetBaterryMaster</servlet-name>
+        <servlet-class>batterymaster.GetBaterryMaster</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddUpdateBatteryMaster</servlet-name>
+        <servlet-class>batterymaster.AddUpdateBatteryMaster</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ValidateLogin</servlet-name>
         <url-pattern>/ValidateLogin</url-pattern>
@@ -1715,6 +1723,14 @@
     <servlet-mapping>
         <servlet-name>AddUpdateCameraMaster</servlet-name>
         <url-pattern>/AddUpdateCameraMaster</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetBaterryMaster</servlet-name>
+        <url-pattern>/GetBaterryMaster</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddUpdateBatteryMaster</servlet-name>
+        <url-pattern>/AddUpdateBatteryMaster</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
