@@ -840,6 +840,10 @@
         <servlet-name>GetTaxMaster</servlet-name>
         <servlet-class>taxmaster.GetTaxMaster</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetAccountMasterCode</servlet-name>
+        <servlet-class>accountMaster.GetAccountMasterCode</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ValidateLogin</servlet-name>
         <url-pattern>/ValidateLogin</url-pattern>
@@ -1675,6 +1679,10 @@
     <servlet-mapping>
         <servlet-name>GetTaxMaster</servlet-name>
         <url-pattern>/GetTaxMaster</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetAccountMasterCode</servlet-name>
+        <url-pattern>/GetAccountMasterCode</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

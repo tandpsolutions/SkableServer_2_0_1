@@ -103,6 +103,10 @@ public class GetSalesBillPrint extends HttpServlet {
                     object.addProperty("COMP_ADDRESS3", lb.companySetUp().getAddress_3());
                     object.addProperty("COMP_EMAIL", lb.companySetUp().getEmail());
                     object.addProperty("COMP_MOBILE", lb.companySetUp().getPhone_no());
+                    object.addProperty("tax_type", "0");
+                    object.addProperty("HSN_CODE", "");
+                    object.addProperty("GST_NO", "");
+                    object.addProperty("COMPANY_GST_NO", "");
                     array.add(object);
                 }
                 lb.closeResultSet(viewDataRs);
