@@ -48,7 +48,7 @@ public class getSetUpDataSeries extends HttpServlet {
         Library lb = Library.getInstance();
         if (dataConnection != null) {
             try {
-                String sql = "select SR_CD,MODEL_CD,MEMORY_CD,COLOUR_CD,OPB_QTY,OPB_VAL from seriesmst where sr_cd='" + sr_cd + "'";
+                String sql = "select SR_CD,MODEL_CD,MEMORY_CD,COLOUR_CD,OPB_QTY,OPB_VAL,RAM_CD,CAMERA_CD,BATTERY_CD from seriesmst where sr_cd='" + sr_cd + "'";
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
                 ResultSet rsLocal = pstLocal.executeQuery();
                 if (rsLocal.next()) {
@@ -56,6 +56,9 @@ public class getSetUpDataSeries extends HttpServlet {
                     jResultObj.addProperty("MODEL_CD", rsLocal.getString("MODEL_CD"));
                     jResultObj.addProperty("MEMORY_CD", rsLocal.getString("MEMORY_CD"));
                     jResultObj.addProperty("COLOUR_CD", rsLocal.getString("COLOUR_CD"));
+                    jResultObj.addProperty("RAM_CD", rsLocal.getString("RAM_CD"));
+                    jResultObj.addProperty("CAMERA_CD", rsLocal.getString("CAMERA_CD"));
+                    jResultObj.addProperty("BATTERY_CD", rsLocal.getString("BATTERY_CD"));
                     jResultObj.addProperty("OPB_QTY", rsLocal.getString("OPB_QTY"));
                     jResultObj.addProperty("OPB_VAL", rsLocal.getString("OPB_VAL"));
                 }

@@ -1507,6 +1507,48 @@ public class Library {
         }
         return array;
     }
+    
+    public JsonArray getRamMaster(Connection dataConnection, String field, String value) throws SQLException {
+        String sql = "select RAM_CD,RAM_NAME from RAMMST WHERE " + field + " like '%" + value + "%'";
+        PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
+        ResultSet rsLocal = pstLocal.executeQuery();
+        JsonArray array = new JsonArray();
+        while (rsLocal.next()) {
+            JsonObject object = new JsonObject();
+            object.addProperty("RAM_CD", rsLocal.getString("RAM_CD"));
+            object.addProperty("RAM_NAME", rsLocal.getString("RAM_NAME"));
+            array.add(object);
+        }
+        return array;
+    }
+    
+    public JsonArray getCameraMaster(Connection dataConnection, String field, String value) throws SQLException {
+        String sql = "select CAMERA_CD,CAMERA_NAME from cameramst WHERE " + field + " like '%" + value + "%'";
+        PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
+        ResultSet rsLocal = pstLocal.executeQuery();
+        JsonArray array = new JsonArray();
+        while (rsLocal.next()) {
+            JsonObject object = new JsonObject();
+            object.addProperty("CAMERA_CD", rsLocal.getString("CAMERA_CD"));
+            object.addProperty("CAMERA_NAME", rsLocal.getString("CAMERA_NAME"));
+            array.add(object);
+        }
+        return array;
+    }
+    
+    public JsonArray getBatteryMaster(Connection dataConnection, String field, String value) throws SQLException {
+        String sql = "select BATTERY_CD,BATTERY_NAME from batterymst WHERE " + field + " like '%" + value + "%'";
+        PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
+        ResultSet rsLocal = pstLocal.executeQuery();
+        JsonArray array = new JsonArray();
+        while (rsLocal.next()) {
+            JsonObject object = new JsonObject();
+            object.addProperty("BATTERY_CD", rsLocal.getString("BATTERY_CD"));
+            object.addProperty("BATTERY_NAME", rsLocal.getString("BATTERY_NAME"));
+            array.add(object);
+        }
+        return array;
+    }
 
     public JsonArray getTidMaster(Connection dataConnection, String field, String value) throws SQLException {
         String sql = "select TID_CD,TID_NAME from TIDMST WHERE " + field + " like '%" + value + "%'";

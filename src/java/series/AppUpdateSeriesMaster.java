@@ -53,6 +53,9 @@ public class AppUpdateSeriesMaster extends HttpServlet {
         final String opb_qty = request.getParameter("opb_qty");
         final String opb_val = request.getParameter("opb_val");
         final String color_cd = request.getParameter("color_cd");
+        final String ram_cd = request.getParameter("ram_cd");
+        final String camera_cd = request.getParameter("camera_cd");
+        final String battery_cd = request.getParameter("battery_cd");
         final String user_id = request.getParameter("user_id");
         final String detailJson = request.getParameter("detail");
         TypeToken<List<OPBSrVal>> token = new TypeToken<List<OPBSrVal>>() {
@@ -64,12 +67,13 @@ public class AppUpdateSeriesMaster extends HttpServlet {
             try {
                 String sql = "";
                 if (sr_cd.equalsIgnoreCase("")) {
-                    sql = "INSERT INTO SERIESMST (SR_ALIAS,SR_NAME,MODEL_CD,MEMORY_CD,COLOUR_CD,OPB_QTY,OPB_VAL,USER_ID ,SR_CD) VALUES (?,?,?,?,?,?,?,?,?)";
+                    sql = "INSERT INTO SERIESMST (SR_ALIAS,SR_NAME,MODEL_CD,MEMORY_CD,COLOUR_CD,OPB_QTY,OPB_VAL,USER_ID,RAM_CD,CAMERA_CD,BATTERY_CD,SR_CD) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
                     sr_cd = lb.generateKey(dataConnection, "SERIESMST", "SR_CD", "S", 7);
                 } else {
                     SeriesMasterDelete smu = new SeriesMasterDelete(dataConnection);
                     smu.seriesUpdate(sr_cd, "1");
-                    sql = "UPDATE SERIESMST SET SR_ALIAS=?,SR_NAME=?,MODEL_CD=?,MEMORY_CD=?,COLOUR_CD=?,OPB_QTY=?,OPB_VAL=?,USER_ID=?,EDIT_NO=EDIT_NO+1,TIME_STAMP=CURRENT_TIMESTAMP where SR_CD=?";
+                    sql = "UPDATE SERIESMST SET SR_ALIAS=?,SR_NAME=?,MODEL_CD=?,MEMORY_CD=?,COLOUR_CD=?,OPB_QTY=?,OPB_VAL=?,USER_ID=?,EDIT_NO=EDIT_NO+1,TIME_STAMP=CURRENT_TIMESTAMP,"
+                            + "ram_cd=?,camera_cd=?,battery_cd=? where SR_CD=?";
                 }
 
                 PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
@@ -81,7 +85,10 @@ public class AppUpdateSeriesMaster extends HttpServlet {
                 pstLocal.setString(6, opb_qty);
                 pstLocal.setString(7, opb_val);
                 pstLocal.setString(8, user_id);
-                pstLocal.setString(9, sr_cd);
+                pstLocal.setString(9, ram_cd);
+                pstLocal.setString(10, camera_cd);
+                pstLocal.setString(11, battery_cd);
+                pstLocal.setString(12, sr_cd);
                 pstLocal.executeUpdate();
 
                 if (!detail.isEmpty()) {

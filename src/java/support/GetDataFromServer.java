@@ -321,6 +321,27 @@ public class GetDataFromServer extends HttpServlet {
                         jResultObj.addProperty("result", 1);
                         jResultObj.addProperty("Cause", "success");
                         jResultObj.add("data", array);
+                    case 40:
+                        String ram_name = request.getParameter("value");
+                        array = lb.getRamMaster(dataConnection, "RAM_NAME", ram_name);
+                        jResultObj.addProperty("result", 1);
+                        jResultObj.addProperty("Cause", "success");
+                        jResultObj.add("data", array);
+                        break;
+                    case 41:
+                        String camera_name = request.getParameter("value");
+                        array = lb.getCameraMaster(dataConnection, "CAMERA_NAME", camera_name);
+                        jResultObj.addProperty("result", 1);
+                        jResultObj.addProperty("Cause", "success");
+                        jResultObj.add("data", array);
+                        break;
+                    case 42:
+                        String battery_name = request.getParameter("value");
+                        array = lb.getBatteryMaster(dataConnection, "BATTERY_NAME", battery_name);
+                        jResultObj.addProperty("result", 1);
+                        jResultObj.addProperty("Cause", "success");
+                        jResultObj.add("data", array);
+                        break;
                 }
             } catch (SQLNonTransientConnectionException ex1) {
                 jResultObj.addProperty("result", -1);

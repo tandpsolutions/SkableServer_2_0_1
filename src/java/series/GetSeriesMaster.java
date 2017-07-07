@@ -46,10 +46,15 @@ public class GetSeriesMaster extends HttpServlet {
         if (dataConnection != null) {
             try {
                 String sql = "select TAX_NAME,t.TYPE_NAME,t2.type_name as sub_type_name,SR_CD,SR_ALIAS,SR_NAME,BRAND_NAME,MODEL_NAME,MEMORY_NAME"
-                        + ",COLOUR_NAME from SERIESMST s left join modelmst m on s.MODEL_CD=m.MODEL_CD left join BRANDMST b on m.BRAND_CD=b.BRAND_CD"
+                        + ",COLOUR_NAME,RAM_NAME,CAMERA_NAME,BATTERY_NAME"
+                        + " from SERIESMST s left join modelmst m on s.MODEL_CD=m.MODEL_CD left join BRANDMST b on m.BRAND_CD=b.BRAND_CD"
                         + " left join MEMORYMST m1 on s.MEMORY_CD=m1.MEMORY_CD left join COLOURMST c on s.COLOUR_CD=c.COLOUR_CD"
                         + " left join typemst t on m.type_cd=t.type_cd left join typemst t2 on m.sub_type_cd=t2.type_cd"
-                        + " left join taxmst t1 on m.tax_cd=t1.tax_cd where sr_name <> '' ";
+                        + " left join taxmst t1 on m.tax_cd=t1.tax_cd"
+                        + " left join rammst r1 on s.ram_cd=r1.ram_cd"
+                        + " left join cameramst c1 on s.camera_cd=c1.camera_cd"
+                        + " left join batterymst b1 on s.battery_cd=b1.battery_cd"
+                        + "  where sr_name <> '' ";
                 if (sr_name != null) {
                     sql += " and (sr_name like '%" + sr_name + "%' or sr_alias like '%" + sr_name + "%')";
                 }
@@ -72,6 +77,9 @@ public class GetSeriesMaster extends HttpServlet {
                     object.addProperty("TYPE_NAME", rsLocal.getString("TYPE_NAME"));
                     object.addProperty("SUB_TYPE_NAME", rsLocal.getString("SUB_TYPE_NAME"));
                     object.addProperty("TAX_NAME", rsLocal.getString("TAX_NAME"));
+                    object.addProperty("RAM_NAME", rsLocal.getString("RAM_NAME"));
+                    object.addProperty("CAMERA_NAME", rsLocal.getString("CAMERA_NAME"));
+                    object.addProperty("BATTERY_NAME", rsLocal.getString("BATTERY_NAME"));
                     array.add(object);
                 }
                 jResultObj.addProperty("result", 1);
