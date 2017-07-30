@@ -1104,6 +1104,7 @@ public class Library {
             object.addProperty("PUR_TAG_NO", rsLocal.getString("PUR_TAG_NO"));
             object.addProperty("TAG_DEL", rsLocal.getString("TAG_DEL"));
             object.addProperty("REMARK", rsLocal.getString("REMARK"));
+            object.addProperty("TAX_TYPE", "0");
             object.addProperty("DISC_RATE", rsLocal.getString("DISC_RATE"));
             object.addProperty("MRP", rsLocal.getString("MRP"));
             object.addProperty("IS_MAIN", rsLocal.getInt("IS_MAIN"));
