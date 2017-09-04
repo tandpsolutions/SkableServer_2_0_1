@@ -54,19 +54,40 @@ public class MarginReport extends HttpServlet {
         Library lb = Library.getInstance();
         if (dataConnection != null) {
             try {
-                String sql = "SELECT v.inv_no,v.v_type,v.branch_cd,t.TAG_NO,SR_NAME,t.PUR_RATE,v1.AMT as SALE_RATE,b.BRAND_NAME,t.pur_ref_no,t.sale_ref_no "
+
+                String sql = "SET SESSION group_concat_max_len = 10000000000000000";
+                PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
+                pstLocal.executeUpdate();
+
+                sql = "SELECT group_concat(concat('\\'', sale_ref_no,'\\'')) FROM tag\n"
+                        + " where tag_no in (select v1.tag_no from vilshd v, vilsdt v1 where v.REF_NO=v1.REF_NO and \n"
+                        + " v.V_DATE>='" + from_date + "' and v.v_date<='" + to_date + "')";
+                pstLocal = dataConnection.prepareStatement(sql);
+                ResultSet rsLocal = pstLocal.executeQuery();
+                String ref_no = "";
+                if (rsLocal.next()) {
+                    ref_no = rsLocal.getString(1);
+                }
+
+                sql = "SELECT v.v_date,v.inv_no,v.v_type,v.branch_cd,t.TAG_NO,SR_NAME,t.PUR_RATE,v1.amt as SALE_RATE,b.BRAND_NAME,t.pur_ref_no,t.sale_ref_no "
                         + " FROM VILSHD v LEFT JOIN vilsdt v1 ON v.ref_no=v1.ref_no "
                         + " LEFT JOIN tag t ON t.REF_NO=v1.PUR_TAG_NO LEFT JOIN  SERIESMST s ON t.sr_cd=s.sr_cd "
                         + " LEFT JOIN MODELMST m ON s.model_cd=m.model_cd LEFT JOIN brandmst b ON m.brand_cd=b.brand_cd"
                         + " where v.v_date>='" + from_date + "' and "
-                        + " v.v_date<='" + to_date + "'  and v.is_del=0 and t.is_del=1 AND v1.TAG_NO<>'' AND v1.SR_CD=t.SR_CD ";
+                        + " v.v_date<='" + to_date + "'  and v.is_del=0 and t.is_del=1 AND v1.TAG_NO<>'' AND v1.SR_CD=t.SR_CD"
+                        + " and v.ref_no in (" + ref_no + ") ";
 
                 if (mode.equalsIgnoreCase("1")) {
                     sql += " and (v1.amt-PUR_RATE) <0";
                 }
 
                 if (v_type != 0) {
-                    sql += " and v.v_type =" + (v_type - 1);
+                    sql += " and ((v.v_type =" + (v_type - 1) + ")";
+                    if (v_type == 1) {
+                        sql += " or v.ac_cd in (select ac_cd from acntmst where tin ='' or gst_no = ''))";
+                    } else {
+                        sql += " or v.ac_cd in (select ac_cd from acntmst where tin <>'' and  gst_no <> ''))";
+                    }
                 }
 
                 if (mode.equalsIgnoreCase("2")) {
@@ -102,8 +123,8 @@ public class MarginReport extends HttpServlet {
 //                        + " where v.v_date>='" + from_date + "' and "
 //                        + " v.v_date<='" + to_date + "' ";
 //                sql += " order by SR_NAME";
-                PreparedStatement pstLocal = dataConnection.prepareStatement(sql);
-                ResultSet rsLocal = pstLocal.executeQuery();
+                pstLocal = dataConnection.prepareStatement(sql);
+                rsLocal = pstLocal.executeQuery();
                 JsonArray array = new JsonArray();
                 while (rsLocal.next()) {
                     JsonObject object = new JsonObject();
@@ -116,6 +137,8 @@ public class MarginReport extends HttpServlet {
                     object.addProperty("branch_cd", rsLocal.getString("branch_cd"));
                     object.addProperty("INV_NO", rsLocal.getString("INV_NO"));
                     object.addProperty("V_TYPE", rsLocal.getString("V_TYPE"));
+                    object.addProperty("BRAND_NAME", rsLocal.getString("BRAND_NAME"));
+                    object.addProperty("V_DATE", rsLocal.getString("V_DATE"));
                     array.add(object);
                 }
                 if (bank_charges) {

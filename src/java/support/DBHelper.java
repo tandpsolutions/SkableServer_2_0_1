@@ -51,7 +51,7 @@ public class DBHelper {
     }
 
     private static void setupMainConnectionPool() {
-        String url = "jdbc:mysql://" + Constant.ip + ":" + 3306 + "/ipearlmain?sessionVariables=sql_mode=''";
+        String url = "jdbc:mysql://" + Constant.ip + ":" + 3306 + "/skablemain?sessionVariables=sql_mode=''";
         mysqlDSMain = new MysqlDataSource();
         mysqlDSMain.setURL(url);
         mysqlDSMain.setUser("root");
